@@ -2,6 +2,8 @@
 using DecoranestBacknd.Ecommerce.Shared.DTO;
 using DecoranestBacknd.Infrastructure.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DecoranestBacknd.DecoraNest.Core.Services
 {
@@ -22,7 +24,36 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                 Category = p.Category,
                 Description = p.Description,
                 ImageUrl = p.ImgUrl
-            })
+            }).ToListAsync();
+        }
+        public async Task<UserProductDTO> GetProductByIdAsync(int id)
+        {
+            var product = await _context.Products.Where(p => p.ProductID == id)
+                .Select(p => new UserProductDTO
+                {
+                    ProductId = p.ProductID,
+                    ProductName = p.ProductName,
+                    Price = p.Price,
+                    Category = p.Category,
+                    Description = p.Description,
+                    ImageUrl = p.ImgUrl
+                }).FirstOrDefaultAsync();
+
+            return product;
+        }
+        public async Task<IEnumerable<UserProductDTO>> GetProductByCategoryAsync(string category)
+        {
+            var product = await _context.Products.Where(p => p.Category == category)
+                .Select(p => new UserProductDTO
+                {
+                    ProductId = p.ProductID,
+                    ProductName = p.ProductName,
+                    Price = p.Price,
+                    Category = p.Category,
+                    Description = p.Description,
+                    ImageUrl = p.ImgUrl
+                }).ToListAsync();
+            return product;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Entities
          public User? User { get; set; }
         public int ProductId { get; set; }
         public Product? Product { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal Price { get; set; }
         public DateTime AddedAt { get; set; } = DateTime.Now;
     }
 }

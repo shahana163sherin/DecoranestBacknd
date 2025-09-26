@@ -36,8 +36,10 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Role, user.Role)
         }),
-                NotBefore = DateTime.UtcNow, // token valid immediately
-                Expires = DateTime.UtcNow.AddDays(_jwtSettings.ExpirationInDays).AddSeconds(1), // ensure it's after NotBefore
+                NotBefore = DateTime.UtcNow,
+                Expires = DateTime.UtcNow.AddDays(_jwtSettings.ExpirationInDays).AddSeconds(1),
+                Issuer = _jwtSettings.Issuer,         
+                Audience = _jwtSettings.Audience,
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
@@ -88,21 +90,21 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                 throw new Exception("Error registering user: " + ex.Message);
             }
         }
-       
 
-        public async Task<Object>LoginUserAsync(UserLoginDTO dto)
+
+        public async Task<Object> LoginUserAsync(UserLoginDTO dto)
         {
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u=>u.Email==dto.Email);
-                if(user == null)
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+                if (user == null)
                 {
-                   return new {status="error",message="User Not Found"};
+                    return new { status = "error", message = "User Not Found" };
                 }
                 bool isPasswordValid = BCrypt.Net.BCrypt.Verify(dto.Password, user.Password);
                 if (!isPasswordValid)
                 {
-                   return new { status = "error", message = "Invalid password" };
+                    return new { status = "error", message = "Invalid password" };
                 }
                 if (user.IsBlocked)
                 {
@@ -117,17 +119,19 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                     {
                         name = user.Name,
                         email = user.Email,
-                        
+
                     }
                 };
 
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return "Error logging in: " + ex.Message;
             }
         }
+
+       
 
         public async Task<bool>ResetPasswordAsync(UserResetPasswordDTO dto)
         {
@@ -143,7 +147,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                 return true;
 
             }
-            catch (Exception ex)
+            catch (Exception ex)  
             {
                                 throw new Exception("Error resetting password: " + ex.Message);
             }

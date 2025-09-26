@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace DecoranestBacknd.DecoraNest.Core.Entities
 {
@@ -12,7 +13,8 @@ namespace DecoranestBacknd.DecoraNest.Core.Entities
         public string Category { get; set; }
         public decimal Price { get; set; }
         public string ImgUrl { get; set; }
-        public ICollection<Cart> Carts { get; set; }=new List<Cart>();
+        [JsonIgnore]
+        public ICollection<CartItem> CartItems { get; set; }=new List<CartItem>();
         public ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
 
     }

@@ -10,13 +10,15 @@ namespace DecoranestBacknd.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+    
         public UsersController(IUserService userService)
         {
             _userService = userService;
+          
 
         }
 
-        [HttpPost("/users/Register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register(UserRegisterDTO dto)
         {
             try
@@ -34,29 +36,36 @@ namespace DecoranestBacknd.Controllers
             }
 
         }
-        [HttpPost("/users/Login")]
+
+
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLoginDTO dto)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Invalid request");
+                    return BadRequest(new { status = "error", message = "Invalid request" });
                 }
+
                 var result = await _userService.LoginUserAsync(dto);
-                return Ok(result);
-                //if(result== "login Successful")
-                //{
-                //    return Ok(new { message = result });
-                //}
-                //return Unauthorized(new { message = result });
+
+                if (result == null || result.GetType().GetProperty("jwt_token")?.GetValue(result) == null)
+                {
+                    return Unauthorized(new { status = "error", message = "Invalid email or password" });
+                }
+
+                return Ok(result); 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { status = "error", message = ex.Message });
             }
         }
-        [HttpPatch("/users/NewPassword")]
+
+
+
+        [HttpPatch("NewPassword")]
         public async Task<IActionResult>NewPassword(UserResetPasswordDTO dto)
         {
             try

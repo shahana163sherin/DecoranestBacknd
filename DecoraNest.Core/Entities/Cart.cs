@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
+using System.Text.Json.Serialization;
 
 namespace DecoranestBacknd.DecoraNest.Core.Entities
 {
@@ -7,12 +8,13 @@ namespace DecoranestBacknd.DecoraNest.Core.Entities
     {
         [Key]
         public int CartId { get; set; }
-        public int UserID { get; set; }
+        public int? UserID { get; set; }
+        [JsonIgnore]
         public User? User { get; set; }
-        public int ProductId { get; set; }
-        public Product? Product { get; set; }
-        public int Quantity { get; set; }
-        public decimal TotalPrice { get; set; }
+       
+
+        [JsonIgnore]
+        public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
         public DateTime AddedAt { get; set; }= DateTime.Now;
     }
 }
