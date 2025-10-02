@@ -9,8 +9,10 @@ namespace DecoranestBacknd.DecoraNest.Core.Interfaces
 
         Task<Object> LoginUserAsync(UserLoginDTO dto);
         Task<bool> ResetPasswordAsync(UserResetPasswordDTO dto);
+        Task<Object> RefreshTokenAsync(string token);
 
-       
+
+
 
     }
 }

@@ -10,11 +10,15 @@ namespace DecoranestBacknd.DecoraNest.Core.Entities
         public int ProductID { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }
-        public string Category { get; set; }
+        //public string Category { get; set; }
+        public int CategoryId { get; set; }
+        [JsonIgnore]
+
+        public Category Category { get; set; } 
         public decimal Price { get; set; }
         public string ImgUrl { get; set; }
         [JsonIgnore]
-        public ICollection<CartItem> CartItems { get; set; }=new List<CartItem>();
+        public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
         public ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
 
     }

@@ -5,24 +5,18 @@
 namespace DecoranestBacknd.Migrations
 {
     /// <inheritdoc />
-    public partial class cartandorder : Migration
+    public partial class afterfixingrelation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "TotalPrice",
-                table: "Wishlists",
-                newName: "Price");
+
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Price",
-                table: "Wishlists",
-                newName: "TotalPrice");
+
         }
     }
 }

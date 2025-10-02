@@ -25,12 +25,16 @@ namespace DecoranestBacknd
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IWishlist, WishlistService>();
+            builder.Services.AddScoped<ICategory, CategoryService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
            
             builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
+
+            builder.Services.Configure<RazorpaySettings>(builder.Configuration.GetSection("Razorpay"));
 
             builder.Services
                 .AddAuthentication(options =>
@@ -89,14 +93,22 @@ namespace DecoranestBacknd
 
             var app = builder.Build();
 
-           
+
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 SeedHelper.SeedProducts(context);
             }
 
-            
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            //    context.Database.Migrate(); // ensure latest migration applied
+            //    SeedHelper.SeedProducts(context);
+            //}
+
+
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

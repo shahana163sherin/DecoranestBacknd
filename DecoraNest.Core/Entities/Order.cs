@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace DecoranestBacknd.DecoraNest.Core.Entities
 {
@@ -14,5 +15,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Entities
         public decimal TotalAmount { get; set; }
         public string Address { get; set; }
         public ICollection<OrderItem> Items { get; set; }=new List<OrderItem>();
+        [JsonIgnore]
+        public Payment Payment { get; set; }
     }
 }

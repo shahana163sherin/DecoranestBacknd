@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DecoranestBacknd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250922102809_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251002140852_refresh null")]
+    partial class refreshnull
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,25 +36,64 @@ namespace DecoranestBacknd.Migrations
                     b.Property<DateTime>("AddedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartId");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.CartItem", b =>
+                {
+                    b.Property<int>("CartItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartItemId"));
+
+                    b.Property<DateTime>("AddedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
+                    b.HasKey("CartItemId");
 
-                    b.HasKey("CartId");
+                    b.HasIndex("CartId");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("UserID");
+                    b.ToTable("CartItems");
+                });
 
-                    b.ToTable("Carts");
+            modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Order", b =>
@@ -69,7 +108,7 @@ namespace DecoranestBacknd.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
@@ -77,6 +116,7 @@ namespace DecoranestBacknd.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("UserID")
@@ -109,6 +149,7 @@ namespace DecoranestBacknd.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductID")
@@ -128,6 +169,50 @@ namespace DecoranestBacknd.Migrations
                     b.ToTable("OrderItems");
                 });
 
+            modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Payment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RazorPayOrderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RazorPaySignature")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RazorpayPaymentId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("Payment");
+                });
+
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Product", b =>
                 {
                     b.Property<int>("ProductID")
@@ -136,9 +221,8 @@ namespace DecoranestBacknd.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductID"));
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -149,6 +233,7 @@ namespace DecoranestBacknd.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ProductName")
@@ -157,7 +242,50 @@ namespace DecoranestBacknd.Migrations
 
                     b.HasKey("ProductID");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByIp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReplacedByToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Revoked")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RevokedByIp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("User_Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("User_Id");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.User", b =>
@@ -209,11 +337,12 @@ namespace DecoranestBacknd.Migrations
                     b.Property<DateTime>("AddedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
@@ -229,21 +358,30 @@ namespace DecoranestBacknd.Migrations
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Cart", b =>
                 {
-                    b.HasOne("DecoranestBacknd.DecoraNest.Core.Entities.Product", "Product")
+                    b.HasOne("DecoranestBacknd.DecoraNest.Core.Entities.User", "User")
                         .WithMany("Carts")
+                        .HasForeignKey("UserID");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.CartItem", b =>
+                {
+                    b.HasOne("DecoranestBacknd.DecoraNest.Core.Entities.Cart", "Cart")
+                        .WithMany("CartItems")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DecoranestBacknd.DecoraNest.Core.Entities.Product", "Product")
+                        .WithMany("CartItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DecoranestBacknd.DecoraNest.Core.Entities.User", "User")
-                        .WithMany("Carts")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Cart");
 
                     b.Navigation("Product");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Order", b =>
@@ -268,6 +406,39 @@ namespace DecoranestBacknd.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Payment", b =>
+                {
+                    b.HasOne("DecoranestBacknd.DecoraNest.Core.Entities.Order", "Order")
+                        .WithOne("Payment")
+                        .HasForeignKey("DecoranestBacknd.DecoraNest.Core.Entities.Payment", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Product", b =>
+                {
+                    b.HasOne("DecoranestBacknd.DecoraNest.Core.Entities.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("DecoranestBacknd.DecoraNest.Core.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("User_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Wishlist", b =>
                 {
                     b.HasOne("DecoranestBacknd.DecoraNest.Core.Entities.Product", "Product")
@@ -287,14 +458,27 @@ namespace DecoranestBacknd.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Cart", b =>
+                {
+                    b.Navigation("CartItems");
+                });
+
+            modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Category", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Order", b =>
                 {
                     b.Navigation("Items");
+
+                    b.Navigation("Payment")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Product", b =>
                 {
-                    b.Navigation("Carts");
+                    b.Navigation("CartItems");
 
                     b.Navigation("Wishlists");
                 });
@@ -304,6 +488,8 @@ namespace DecoranestBacknd.Migrations
                     b.Navigation("Carts");
 
                     b.Navigation("Orders");
+
+                    b.Navigation("RefreshTokens");
 
                     b.Navigation("Wishlists");
                 });

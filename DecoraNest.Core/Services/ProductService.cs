@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DecoranestBacknd.DecoraNest.Core.Services
 {
-    public class ProductService:IProductService
+    public class ProductService : IProductService
     {
         private readonly ApplicationDbContext _context;
         public ProductService(ApplicationDbContext context)
@@ -21,7 +21,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                 ProductId = p.ProductID,
                 ProductName = p.ProductName,
                 Price = p.Price,
-                Category = p.Category,
+                Category = p.Category.CategoryName,
                 Description = p.Description,
                 ImageUrl = p.ImgUrl
             }).ToListAsync();
@@ -34,7 +34,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                     ProductId = p.ProductID,
                     ProductName = p.ProductName,
                     Price = p.Price,
-                    Category = p.Category,
+                    Category = p.Category.CategoryName,
                     Description = p.Description,
                     ImageUrl = p.ImgUrl
                 }).FirstOrDefaultAsync();
@@ -43,13 +43,13 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
         }
         public async Task<IEnumerable<UserProductDTO>> GetProductByCategoryAsync(string category)
         {
-            var product = await _context.Products.Where(p => p.Category == category)
+            var product = await _context.Products.Where(p => p.Category.CategoryName == category)
                 .Select(p => new UserProductDTO
                 {
                     ProductId = p.ProductID,
                     ProductName = p.ProductName,
                     Price = p.Price,
-                    Category = p.Category,
+                    Category = p.Category.CategoryName,
                     Description = p.Description,
                     ImageUrl = p.ImgUrl
                 }).ToListAsync();

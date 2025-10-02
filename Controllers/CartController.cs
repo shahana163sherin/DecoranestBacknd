@@ -36,7 +36,7 @@ namespace DecoranestBacknd.Controllers
 
                 int userId = int.Parse(userIdClaim);
 
-                // Call service
+                
                 var cart = await _cartService.AddToCartAsync(userId, dto.ProductID, dto.Quantity);
 
                 var response = new

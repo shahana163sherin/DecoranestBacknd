@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace DecoranestBacknd.DecoraNest.Core.Services
@@ -49,6 +50,25 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             return tokenHandler.WriteToken(token);
         }
 
+        public RefreshToken GenerateRefreshToken(User user)
+        {
+            var randomBytes = new byte[64];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomBytes);
+            }
+
+            return new RefreshToken
+            {
+                Token = Convert.ToBase64String(randomBytes),
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow,       // ✅ important
+                CreatedByIp = "system",          // or pass real IP
+                //IsActive = true,
+                User_Id = user.User_Id
+            };
+        }
+
 
         public async Task<Object> RegisterUserAsync(UserRegisterDTO dto)
 
@@ -70,11 +90,11 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
-                var jwtToken = GenerateJwtToken(user);
+                //var jwtToken = GenerateJwtToken(user);
                 return new
                 {
                     status = "success",
-                    jwt_token = jwtToken,
+                    //jwt_token = jwtToken,
                     user = new
                     {
                         name = user.Name,
@@ -111,10 +131,25 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                     return new { status = "error", message = "User is blocked" };
                 }
                 var jwtToken = GenerateJwtToken(user);
+
+                var refreshToken = GenerateRefreshToken(user);
+                refreshToken.User = user;  // explicitly link
+                try
+                {
+                    _context.RefreshTokens.Add(refreshToken);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error saving refresh token: " + ex.InnerException?.Message ?? ex.Message);
+                }
+
+
                 return new
                 {
                     status = "success",
                     jwt_token = jwtToken,
+                    refresh_token=refreshToken.Token,
                     user = new
                     {
                         name = user.Name,
@@ -152,6 +187,36 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                                 throw new Exception("Error resetting password: " + ex.Message);
             }
         }
+
+        public async Task<Object> RefreshTokenAsync(string token)
+        {
+            var refreshToken = await _context.RefreshTokens
+                .Include(rt => rt.User)
+                .FirstOrDefaultAsync(rt => rt.Token == token);
+
+            if (refreshToken == null || !refreshToken.IsActive)
+            {
+                return new { status = "error", message = "Invalid or expired refresh token" };
+            }
+
+            // Revoke old refresh token
+            refreshToken.Revoked = DateTime.UtcNow;
+
+            // Generate new JWT & refresh token
+            var jwtToken = GenerateJwtToken(refreshToken.User);
+            var newRefreshToken = GenerateRefreshToken(refreshToken.User);
+
+            _context.RefreshTokens.Add(newRefreshToken);
+            await _context.SaveChangesAsync();
+
+            return new
+            {
+                status = "success",
+                jwt_token = jwtToken,
+                refresh_token = newRefreshToken.Token
+            };
+        }
+
 
     }
 }

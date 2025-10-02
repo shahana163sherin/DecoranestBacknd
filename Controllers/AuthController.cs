@@ -7,11 +7,11 @@ namespace DecoranestBacknd.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
     
-        public UsersController(IUserService userService)
+        public AuthController(IUserService userService)
         {
             _userService = userService;
           
@@ -94,6 +94,27 @@ namespace DecoranestBacknd.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDTO dto)
+        {
+            if (dto == null || string.IsNullOrEmpty(dto.Token))
+            {
+                return BadRequest(new { status = "error", message = "Token is required" });
+            }
+
+            var result = await _userService.RefreshTokenAsync(dto.Token);
+
+            if (result is null)
+            {
+                return Unauthorized(new { status = "error", message = "Invalid token" });
+            }
+
+            return Ok(result);
+        }
+
+
+
 
     }
 

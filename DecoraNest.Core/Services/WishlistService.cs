@@ -84,7 +84,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
 
         public async Task<bool> RemoveFromWishAsync(int userid,int wishlistid)
         {
-          var wishItem=_context.Wishlists.FirstOrDefault(w=>w.UserID == userid && w.WishListID==wishlistid);
+          var wishItem=await _context.Wishlists.FirstOrDefaultAsync(w=>w.UserID == userid && w.WishListID==wishlistid);
             if (wishItem == null)
             {
                 return false;
