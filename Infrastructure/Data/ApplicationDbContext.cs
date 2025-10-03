@@ -73,6 +73,19 @@ namespace DecoranestBacknd.Infrastructure.Data
      .OnDelete(DeleteBehavior.Cascade);
 
 
+            
+            modelBuilder.Entity<User>().HasData(new User
+            {
+                User_Id = 1,
+                Name = "Admin1",
+                Email = "admin@deco.com",
+                Password = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
+                Role = "Admin",
+                IsBlocked = false
+            });
+
+
+
 
 
 

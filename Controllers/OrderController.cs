@@ -6,7 +6,8 @@ using System.Security.Claims;
 namespace DecoranestBacknd.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize (Roles ="User")] 
+    
     [Route("api/user/[controller]")]
     public class OrderController:ControllerBase
     {

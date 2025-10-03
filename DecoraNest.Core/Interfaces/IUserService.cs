@@ -12,6 +12,11 @@ namespace DecoranestBacknd.DecoraNest.Core.Interfaces
         Task<Object> RefreshTokenAsync(string token);
 
 
+        //admin------------------------------>
+
+        
+
+
 
 
     }

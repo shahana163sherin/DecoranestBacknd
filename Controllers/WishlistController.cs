@@ -9,7 +9,8 @@ namespace DecoranestBacknd.Controllers
 {
     [ApiController]
     [Route("api/users/[controller]")]
-    [Authorize]
+    [Authorize (Roles ="User")] 
+
     public class WishlistController:ControllerBase
     {
         private readonly IWishlist _wishlist;

@@ -8,7 +8,8 @@ namespace DecoranestBacknd.Controllers
 {
     [ApiController]
     [Route("api/users/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "User")]
+
     public class PaymentController:ControllerBase
     {
         private readonly IPaymentService pay;

@@ -1,7 +1,9 @@
 
 using DecoranestBacknd.Configurations;
 using DecoranestBacknd.DecoraNest.Core.Interfaces;
+using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
 using DecoranestBacknd.DecoraNest.Core.Services;
+using DecoranestBacknd.DecoraNest.Core.Services.Admin;
 using DecoranestBacknd.Ecommerce.Shared.Helpers;
 using DecoranestBacknd.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -27,6 +29,8 @@ namespace DecoranestBacknd
             builder.Services.AddScoped<IWishlist, WishlistService>();
             builder.Services.AddScoped<ICategory, CategoryService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IAdminUserService, AdminUserService>();
+            builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

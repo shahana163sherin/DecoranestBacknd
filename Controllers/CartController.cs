@@ -11,7 +11,7 @@ namespace DecoranestBacknd.Controllers
 {
     [ApiController]
     [Route("api/users/[controller]")]
-    [Authorize] 
+    [Authorize (Roles ="User")] 
     public class CartController : ControllerBase
     {
         private readonly ICartService _cartService;
