@@ -1,5 +1,5 @@
 ﻿using DecoranestBacknd.DecoraNest.Core.Entities;
-using DecoranestBacknd.Ecommerce.Shared.DTO;
+using DecoranestBacknd.Ecommerce.Shared.DTO.Adminn;
 
 namespace DecoranestBacknd.DecoraNest.Core.Interfaces.Admin
 {

@@ -1,6 +1,7 @@
 ﻿using Azure;
 using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
 using DecoranestBacknd.Ecommerce.Shared.DTO;
+using DecoranestBacknd.Ecommerce.Shared.DTO.Adminn;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,7 +1,7 @@
 ﻿using DecoranestBacknd.DecoraNest.Core.Entities;
 using DecoranestBacknd.DecoraNest.Core.Interfaces;
 using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
-using DecoranestBacknd.Ecommerce.Shared.DTO;
+using DecoranestBacknd.Ecommerce.Shared.DTO.Adminn;
 using DecoranestBacknd.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

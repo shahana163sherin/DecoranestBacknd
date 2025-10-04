@@ -1,4 +1,4 @@
-﻿namespace DecoranestBacknd.Ecommerce.Shared.DTO
+﻿namespace DecoranestBacknd.Ecommerce.Shared.DTO.Adminn
 {
     public class AdminUserDTO
     {
