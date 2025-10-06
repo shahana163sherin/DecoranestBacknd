@@ -1,4 +1,5 @@
 
+using CloudinaryDotNet;
 using DecoranestBacknd.Configurations;
 using DecoranestBacknd.DecoraNest.Core.Interfaces;
 using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
@@ -6,8 +7,10 @@ using DecoranestBacknd.DecoraNest.Core.Services;
 using DecoranestBacknd.DecoraNest.Core.Services.Admin;
 using DecoranestBacknd.Ecommerce.Shared.Helpers;
 using DecoranestBacknd.Infrastructure.Data;
+using DecoranestBacknd.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -33,6 +36,8 @@ namespace DecoranestBacknd
             builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
             builder.Services.AddScoped<IAdminProductService, AdminProductService>();
             builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
+            builder.Services.AddScoped<IAdminPaymentService, AdminPaymentService>();
+            builder.Services.AddScoped<IAdminDashBoardService, AdminDashBoardService>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -62,6 +67,15 @@ namespace DecoranestBacknd
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
                     };
                 });
+
+            builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+            builder.Services.AddSingleton(sp =>
+            {
+                var config = sp.GetRequiredService<IOptions<CloudinarySettings>>().Value;
+                Account account = new Account(config.CloudName, config.ApiKey, config.ApiSecret);
+                return new Cloudinary(account);
+            });
+
 
             builder.Services.AddAuthorization();
             //Learn more about configuring Swagger / OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -99,6 +113,8 @@ namespace DecoranestBacknd
 
             var app = builder.Build();
 
+            app.UseCustomeMiddleware();
+
 
             using (var scope = app.Services.CreateScope())
             {
@@ -120,6 +136,7 @@ namespace DecoranestBacknd
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
 
             app.UseHttpsRedirection();
 
