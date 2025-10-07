@@ -1,6 +1,8 @@
 
 using Asp.Versioning;
+using AutoMapper;
 using CloudinaryDotNet;
+using DecoranestBacknd.AutoMapper;
 using DecoranestBacknd.Configurations;
 using DecoranestBacknd.DecoraNest.Core.Interfaces;
 using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
@@ -12,6 +14,7 @@ using DecoranestBacknd.Infrastructure.Data;
 using DecoranestBacknd.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -42,6 +45,10 @@ namespace DecoranestBacknd
             builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
             builder.Services.AddScoped<IAdminPaymentService, AdminPaymentService>();
             builder.Services.AddScoped<IAdminDashBoardService, AdminDashBoardService>();
+
+            builder.Services.AddAutoMapper(cfg => {
+                cfg.AddProfile<MappingProfile>();
+            });
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

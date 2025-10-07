@@ -62,9 +62,8 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             {
                 Token = Convert.ToBase64String(randomBytes),
                 Expires = DateTime.UtcNow.AddDays(7),
-                Created = DateTime.UtcNow,       // ✅ important
-                CreatedByIp = "system",          // or pass real IP
-                //IsActive = true,
+                Created = DateTime.UtcNow,       
+                CreatedByIp = "system",          
                 User_Id = user.User_Id
             };
         }
@@ -90,11 +89,11 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
-                //var jwtToken = GenerateJwtToken(user);
+                
                 return new
                 {
                     status = "success",
-                    //jwt_token = jwtToken,
+                    
                     user = new
                     {
                         name = user.Name,
@@ -133,7 +132,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                 var jwtToken = GenerateJwtToken(user);
 
                 var refreshToken = GenerateRefreshToken(user);
-                refreshToken.User = user;  // explicitly link
+                refreshToken.User = user;  
                 try
                 {
                     _context.RefreshTokens.Add(refreshToken);
@@ -184,7 +183,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             }
             catch (Exception ex)  
             {
-                                throw new Exception("Error resetting password: " + ex.Message);
+                   throw new Exception("Error resetting password: " + ex.Message);
             }
         }
 
@@ -199,10 +198,10 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                 return new { status = "error", message = "Invalid or expired refresh token" };
             }
 
-            // Revoke old refresh token
+            
             refreshToken.Revoked = DateTime.UtcNow;
 
-            // Generate new JWT & refresh token
+           
             var jwtToken = GenerateJwtToken(refreshToken.User);
             var newRefreshToken = GenerateRefreshToken(refreshToken.User);
 

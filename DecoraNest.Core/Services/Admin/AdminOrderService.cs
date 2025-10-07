@@ -1,8 +1,10 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
+﻿using AutoMapper;
+using DecoranestBacknd.DecoraNest.Core.Entities;
+using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
+using DecoranestBacknd.Ecommerce.Shared.DTO;
 using DecoranestBacknd.Ecommerce.Shared.DTO.Adminn;
 using DecoranestBacknd.Ecommerce.Shared.Responses;
 using DecoranestBacknd.Infrastructure.Data;
-using DecoranestBacknd.DecoraNest.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Razorpay.Api;
 
@@ -11,29 +13,31 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
     public class AdminOrderService:IAdminOrderService
     {
         private readonly ApplicationDbContext _context;
-        public AdminOrderService(ApplicationDbContext context)
+        private readonly IMapper _mapper;
+        public AdminOrderService(ApplicationDbContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        private AdminOrderDTO MapToDTO(Entities.Order o) => new AdminOrderDTO
-        {
-            OrdeId = o.OrderID,
-            Username = o.User?.Name ?? "N/A",
-            Email = o.User?.Email ?? "N/A",
-            Status = o.Status,
-            TotalAmount = o.TotalAmount,
-            PaymentStatus = o.Payment?.Status ?? "Not Paid",
-            OrderDate = o.OrderDate,
-            Address = o.Address,
-            Items = o.Items?.Select(i => new AdminOrderItemDTO
-            {
-                ProductName = i.ProductName,
-                Quantity = i.Quantity,
-                Price = i.Price,
-                ImgUrl = i.ImgUrl
-            }).ToList() ?? new List<AdminOrderItemDTO>()
-        };
+        //private AdminOrderDTO MapToDTO(Entities.Order o) => new AdminOrderDTO
+        //{
+        //    OrdeId = o.OrderID,
+        //    Username = o.User?.Name ?? "N/A",
+        //    Email = o.User?.Email ?? "N/A",
+        //    Status = o.Status,
+        //    TotalAmount = o.TotalAmount,
+        //    PaymentStatus = o.Payment?.Status ?? "Not Paid",
+        //    OrderDate = o.OrderDate,
+        //    Address = o.Address,
+        //    Items = o.Items?.Select(i => new AdminOrderItemDTO
+        //    {
+        //        ProductName = i.ProductName,
+        //        Quantity = i.Quantity,
+        //        Price = i.Price,
+        //        ImgUrl = i.ImgUrl
+        //    }).ToList() ?? new List<AdminOrderItemDTO>()
+        //};
 
 
 
@@ -49,9 +53,11 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
                 .Take(limit)
                 .ToListAsync();
             var totalpages = (int)Math.Ceiling((double)totalOrders / limit);
+            var orderDTOs = _mapper.Map<List<AdminOrderDTO>>(orders);
             return new PagedResult<AdminOrderDTO>
             {
-                Items = orders.Select(MapToDTO).ToList(),
+                Items = orderDTOs,
+
                 CurrentPage = pagenumber,
                 PageSize = limit,
                 TotalItems = totalOrders,
@@ -80,7 +86,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
             {
                 Status = "Success",
                 Message = "Order found",
-                Data = MapToDTO(order)
+                Data = _mapper.Map<AdminOrderDTO>(order)
             };
         }
 
@@ -136,7 +142,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
                 .Where(o => o.User != null && o.User.Name.ToLower().Contains(username.ToLower()))
                 .ToListAsync();
 
-            var result = orders.Select(o => MapToDTO(o)).ToList();
+            var result = _mapper.Map<List<AdminOrderDTO>>(orders);
 
             if (result == null || result.Count == 0)
             {
@@ -166,7 +172,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
                 .Where(o => o.Status.ToLower().Contains(status.ToLower()))
                 .ToListAsync();
 
-            var result = orders.Select(o => MapToDTO(o)).ToList();
+            var result = _mapper.Map<List<AdminOrderDTO>>(orders);
 
             if (result == null || result.Count == 0)
             {
@@ -198,7 +204,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
                 ? await query.OrderBy(o => o.OrderDate).ToListAsync()
                 : await query.OrderByDescending(o => o.OrderDate).ToListAsync();
 
-            var result = orders.Select(o => MapToDTO(o)).ToList();
+            var result = _mapper.Map<List<AdminOrderDTO>>(orders);
 
             return new ApiResponse<IEnumerable<AdminOrderDTO>>
             {
