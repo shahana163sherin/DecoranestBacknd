@@ -52,34 +52,6 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
         }
 
 
-        //public async Task<bool> AddCategoryAsync(Category category)
-        //{
-        //    _context.Category.Add(category);
-        //    return await _context.SaveChangesAsync() > 0;
-        //}
-
-        //public async Task<bool> UpdateCategoryAsync(int categoryId, Category category)
-        //{
-        //    var existingCategory = await _context.Category.FindAsync(categoryId);
-        //    if(existingCategory == null)
-        //    {
-        //        return false;
-        //    }
-        //    existingCategory.CategoryName = category.CategoryName;
-        //    return await _context.SaveChangesAsync() > 0;
-        //}
-
-        //public async Task<bool> DeleteCategoryAsync(int categoryId)
-        //{
-        //    var category = await _context.Category.FindAsync(categoryId);
-        //        if(category == null)
-        //    {
-        //        return false;
-        //    }
-        //    _context.Category.Remove(category);
-        //    return await _context.SaveChangesAsync() > 0;
-
-        //}
 
 
     }

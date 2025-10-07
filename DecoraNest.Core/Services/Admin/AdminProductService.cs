@@ -23,24 +23,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
             _cloudinary = cloudinary;
             _mapper = mapper;
         }
-        //private AdminProductDTO MapToDTO(Product p)=> new AdminProductDTO
-        //{
-        //  ProductId=p.ProductID,
-        //  ProductName=p.ProductName,
-        //  CategoryName=p.Category.CategoryName,
-        //  Price=p.Price,
-        //   ImageUrl=p.ImgUrl
-        //};
-        //private AdminProductDetailDTO MapToDetailDTO(Product p) => new AdminProductDetailDTO
-        //{
-        //    ProductId = p.ProductID,
-        //    ProductName = p.ProductName,
-        //    Description = p.Description,
-        //    CategoryId = p.CategoryId,
-        //    CategoryName = p.Category?.CategoryName,
-        //    Price = p.Price,
-        //    ImageUrl=p.ImgUrl
-        //};
+ 
 
         private async Task<string> UploadImageToCloudinary(IFormFile file)
         {
@@ -57,37 +40,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
             return result.SecureUrl.AbsoluteUri; 
         }
 
-        //public async Task<PagedResult<AdminProductDTO>> GetAllProductsAsync(int pagenumber, int limit)
-        //{
-        //    var totalProducts = await _context.Products.CountAsync();
-        //    var products = _context.Products
-        //          .Include(p => p.Category)
-        //          .OrderBy(p => p.ProductID)
-        //          .Skip((pagenumber - 1) * limit)
-        //          .Take(limit)
-        //          .ProjectTo<AdminProductDTO>(_mapper.ConfigurationProvider)
-        //          //.Select(p => new AdminProductDTO
-        //          //{
-        //          //    ProductId = p.ProductID,
-        //          //    ProductName = p.ProductName,
-        //          //    CategoryName = p.Category.CategoryName,
-        //          //    ImageUrl = p.ImgUrl,
-        //          //    Price = p.Price
-        //          //})
-        //          .ToListAsync();
-        //    //var products=_mapper.Map<List<AdminProductDTO>>(products);
-        //    var totalPages = (int)Math.Ceiling((double)totalProducts / limit);
-        //    return new PagedResult<AdminProductDTO>
-        //    {
-        //        Items = products,
-        //        CurrentPage = pagenumber,
-        //        PageSize = limit,
-        //        TotalItems = totalProducts,
-        //        TotalPages = totalPages
-        //    };
-
-
-        //}
+  
 
 
         public async Task<PagedResult<AdminProductDTO>> GetAllProductsAsync(int pagenumber, int limit)
@@ -100,13 +53,13 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
                 .Skip((pagenumber - 1) * limit)
                 .Take(limit)
                 .ProjectTo<AdminProductDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync(); // <-- await here
+                .ToListAsync(); 
 
             var totalPages = (int)Math.Ceiling((double)totalProducts / limit);
 
             return new PagedResult<AdminProductDTO>
             {
-                Items = products, // now it's List<AdminProductDTO>
+                Items = products, 
                 CurrentPage = pagenumber,
                 PageSize = limit,
                 TotalItems = totalProducts,
@@ -118,47 +71,11 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
 
 
 
-        //public async Task<ApiResponse<AdminProductDTO>> AddProductAsync(ProductUpdateCreateDTO dto)
-        //{
-        //    string imageUrl = await UploadImageToCloudinary(dto.ImageFile);
-
-        //    var product = new Product
-        //    {
-        //        ProductName = dto.ProductName,
-        //        CategoryId = dto.CategoryId,
-        //        Price = dto.Price,
-        //        Description = dto.Description,
-        //        ImgUrl = imageUrl
-        //    };
-
-        //    _context.Products.Add(product);
-        //    await _context.SaveChangesAsync();
-
-        //    var createdProduct = await _context.Products
-        //        .Include(p => p.Category)
-        //        .Where(p => p.ProductID == product.ProductID)
-        //        //.Select(p => new AdminProductDTO
-        //        //{
-        //        //    ProductId = p.ProductID,
-        //        //    ProductName = p.ProductName,
-        //        //    CategoryName = p.Category.CategoryName,
-        //        //    ImageUrl = p.ImgUrl,
-        //        //    Price = p.Price
-        //        //})
-        //        .FirstOrDefaultAsync();
-        //    var productDto = _mapper.Map<AdminProductDTO>(createdProduct);
-
-        //    return new ApiResponse<AdminProductDTO>
-        //    {
-        //        Status = "Success",
-        //        Message = "Product added successfully.",
-        //        Data = productDto
-        //    };
-        //}
+    
 
         public async Task<ApiResponse<AdminProductDTO>> AddProductAsync(ProductUpdateCreateDTO dto)
         {
-            // Upload image if provided
+           
             string imageUrl = null;
             if (dto.ImageFile != null && dto.ImageFile.Length > 0)
             {
@@ -177,7 +94,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
-            // Fetch product including related data
+            
             var createdProduct = await _context.Products
                 .Include(p => p.Category)
                 .FirstOrDefaultAsync(p => p.ProductID == product.ProductID);
@@ -202,37 +119,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
             };
         }
 
-        //public async Task<ApiResponse<AdminProductDTO?>> GetProductByIdAsync(int id)
-        //{
-        //    var product= await _context.Products
-        //        .Include(p=>p.Category)
-        //        .Where(p=>p.ProductID==id)
-        //        //.Select(p=>new AdminProductDTO
-        //        //{
-        //        //    ProductId = p.ProductID,
-        //        //    ProductName = p.ProductName,
-        //        //    CategoryName = p.Category.CategoryName,
-        //        //    ImageUrl = p.ImgUrl,
-        //        //    Price = p.Price
-        //        //})
-        //        .FirstOrDefaultAsync();
-        //    var productDto = _mapper.Map<AdminProductDTO?>(product);
-        //    if (product == null)
-        //       {
-        //            return new ApiResponse<AdminProductDTO?>
-        //            {
-        //                Status = "Error",
-        //                Message = "Product not found",
-        //                Data = null
-        //            };
-        //        }
-        //    return new ApiResponse<AdminProductDTO?>
-        //    {
-        //        Status = "Success",
-        //        Message = "Product found",
-        //        Data = productDto
-        //    };
-        //}
+     
 
         public async Task<ApiResponse<AdminProductDTO?>> GetProductByIdAsync(int id)
         {
@@ -263,54 +150,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
 
 
 
-        //public async Task<ApiResponse<AdminProductDTO?>> UpdateProductAsync(int id, ProductUpdateCreateDTO dto)
-        //{
-        //    var product = await _context.Products.FindAsync(id);
-
-        //    if (product == null)
-        //    {
-        //        return new ApiResponse<AdminProductDTO?>
-        //        {
-        //            Status = "Error",
-        //            Message = $"Product with ID {id} not found.",
-        //            Data = null
-        //        };
-        //    }
-
-        //    product.ProductName = dto.ProductName;
-        //    product.Description = dto.Description;
-        //    product.CategoryId = dto.CategoryId;
-        //    product.Price = dto.Price;
-
-        //    if (dto.ImageFile != null && dto.ImageFile.Length > 0)
-        //    {
-        //        product.ImgUrl = await UploadImageToCloudinary(dto.ImageFile);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-
-        //    var updatedProduct = await _context.Products
-        //        .Include(p => p.Category)
-        //        .Where(p => p.ProductID == product.ProductID)
-        //        //.Select(p => new AdminProductDTO
-        //        //{
-        //        //    ProductId = p.ProductID,
-        //        //    ProductName = p.ProductName,
-        //        //    CategoryName = p.Category.CategoryName,
-        //        //    ImageUrl = p.ImgUrl,
-        //        //    Price = p.Price
-        //        //})
-        //        .FirstOrDefaultAsync();
-        //    var productDto = _mapper.Map<AdminProductDTO?>(updatedProduct);
-
-        //    return new ApiResponse<AdminProductDTO?>
-        //    {
-        //        Status = "Success",
-        //        Message = "Product updated successfully.",
-        //        Data = productDto
-        //    };
-        //}
-
+      
 
         public async Task<ApiResponse<AdminProductDTO?>> UpdateProductAsync(int id, ProductUpdateCreateDTO dto)
         {
@@ -326,13 +166,13 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
                 };
             }
 
-            // Update fields
+            
             product.ProductName = dto.ProductName;
             product.Description = dto.Description;
             product.CategoryId = dto.CategoryId;
             product.Price = dto.Price;
 
-            // Upload image if provided
+            
             if (dto.ImageFile != null && dto.ImageFile.Length > 0)
             {
                 product.ImgUrl = await UploadImageToCloudinary(dto.ImageFile);
@@ -340,12 +180,12 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
 
             await _context.SaveChangesAsync();
 
-            // Retrieve updated product with category details
+            
             var updatedProduct = await _context.Products
                 .Include(p => p.Category)
                 .FirstOrDefaultAsync(p => p.ProductID == product.ProductID);
 
-            if (updatedProduct == null) // Safety check
+            if (updatedProduct == null) 
             {
                 return new ApiResponse<AdminProductDTO?>
                 {
@@ -389,38 +229,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
                 Data = true
             };
         }
-        //public async Task<ApiResponse<AdminProductDTO?>> SearchByName(string name)
-        //{
-        //    var product= await _context.Products
-        //        .Include(p => p.Category)
-        //        .Where(p => p.ProductName.ToLower().Contains(name.ToLower()))
-        //        //.Select(p => new AdminProductDTO
-        //        //{
-        //        //    ProductId = p.ProductID,
-        //        //    ProductName = p.ProductName,
-        //        //    CategoryName = p.Category.CategoryName,
-        //        //    ImageUrl = p.ImgUrl,
-        //        //    Price = p.Price
-        //        //})
-        //        .FirstOrDefaultAsync();
-        //    var productDto = _mapper.Map<AdminProductDTO?>(product);
-        //    if (product == null)
-        //    {
-        //        return new ApiResponse<AdminProductDTO?>
-        //        {
-        //            Status = "Error",
-        //            Message = "Product not found",
-        //            Data = null
-        //        };
-        //    }
-
-        //    return new ApiResponse<AdminProductDTO?>
-        //    {
-        //        Status = "Success",
-        //        Message = "Product found",
-        //        Data = productDto
-        //    };
-        //}
+       
 
 
         public async Task<ApiResponse<AdminProductDTO?>> SearchByName(string name)
@@ -449,39 +258,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
             };
         }
 
-        //public async Task<ApiResponse<IEnumerable<AdminProductDTO>>>GetByCategory(string categoryName)
-        //{
-        //    var result = await _context.Products
-        //        .Include(p => p.Category)
-        //        .Where(p => p.Category.CategoryName.ToLower() == categoryName.ToLower())
-        //        .ToListAsync();
-
-        //    if(result == null)
-        //    {
-        //        return new ApiResponse<IEnumerable<AdminProductDTO>>
-        //        {
-        //            Status = "Error",
-        //            Message = "No products found for the specified category",
-        //            Data = null
-        //        };
-
-        //    }
-        //    var products = result.Select(p => new AdminProductDTO
-        //    {
-        //        ProductId = p.ProductID,
-        //        ProductName = p.ProductName,
-        //        CategoryName = p.Category.CategoryName,
-        //        ImageUrl = p.ImgUrl,
-        //        Price = p.Price
-        //    });
-
-        //    return new ApiResponse<IEnumerable<AdminProductDTO>>
-        //    {
-        //        Status = "Success",
-        //        Message = "Products retrieved successfully",
-        //        Data = products
-        //    };
-        //}
+       
         public async Task<ApiResponse<IEnumerable<AdminProductDTO>>> GetByCategory(string categoryName)
         {
             var products = await _context.Products

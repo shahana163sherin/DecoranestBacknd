@@ -20,26 +20,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
             _mapper = mapper;
         }
 
-        //private AdminOrderDTO MapToDTO(Entities.Order o) => new AdminOrderDTO
-        //{
-        //    OrdeId = o.OrderID,
-        //    Username = o.User?.Name ?? "N/A",
-        //    Email = o.User?.Email ?? "N/A",
-        //    Status = o.Status,
-        //    TotalAmount = o.TotalAmount,
-        //    PaymentStatus = o.Payment?.Status ?? "Not Paid",
-        //    OrderDate = o.OrderDate,
-        //    Address = o.Address,
-        //    Items = o.Items?.Select(i => new AdminOrderItemDTO
-        //    {
-        //        ProductName = i.ProductName,
-        //        Quantity = i.Quantity,
-        //        Price = i.Price,
-        //        ImgUrl = i.ImgUrl
-        //    }).ToList() ?? new List<AdminOrderItemDTO>()
-        //};
-
-
+      
 
         public async Task<PagedResult<AdminOrderDTO>> GetAllOrdersAsync(int pagenumber, int limit)
         {
@@ -162,7 +143,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
             };
         }
 
-        // 🔹 Get orders by status
+       
         public async Task<ApiResponse<IEnumerable<AdminOrderDTO>>> GetOrdersByStatus(string status)
         {
             var orders = await _context.Orders
@@ -192,7 +173,6 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
             };
         }
 
-        // 🔹 Sort orders by date (ascending/descending)
         public async Task<ApiResponse<IEnumerable<AdminOrderDTO>>> SortOrdersByDate(bool ascending)
         {
             var query = _context.Orders

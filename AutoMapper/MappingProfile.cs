@@ -1,13 +1,32 @@
 ﻿using AutoMapper;
 using DecoranestBacknd.DecoraNest.Core.Entities;
+using DecoranestBacknd.Ecommerce.Shared.DTO;
 using DecoranestBacknd.Ecommerce.Shared.DTO.Adminn;
 
 namespace DecoranestBacknd.AutoMapper
 {
     public class MappingProfile:Profile
     {
-        public MappingProfile()
-        {
+        public MappingProfile() {
+
+
+
+            CreateMap<Order, OrderDTO>()
+                .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderID))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserID))
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
+
+            CreateMap<OrderItem, OrderItemDTO>()
+                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductID))
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductName))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
+                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.ImgUrl, opt => opt.MapFrom(src => src.ImgUrl));
+
+
+
+
             CreateMap<Product, AdminProductDTO>()
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductID))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName))
@@ -31,6 +50,7 @@ namespace DecoranestBacknd.AutoMapper
                 .ForMember(des => des.Items, opt => opt.MapFrom(src => src.Items));
 
             CreateMap<OrderItem, AdminOrderItemDTO>();
+
         }
     }
 }

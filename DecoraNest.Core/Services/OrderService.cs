@@ -1,4 +1,5 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Entities;
+﻿using AutoMapper;
+using DecoranestBacknd.DecoraNest.Core.Entities;
 using DecoranestBacknd.DecoraNest.Core.Interfaces;
 using DecoranestBacknd.Ecommerce.Shared.DTO;
 using DecoranestBacknd.Infrastructure.Data;
@@ -9,9 +10,11 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
     public class OrderService:IOrderService
     {
         private readonly IOrderRepository _repo;
-        public OrderService(IOrderRepository repo)
+        private readonly IMapper _mapper;
+        public OrderService(IOrderRepository repo,IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
         public async Task<OrderDTO> CreteOrderAsync(int userid, string address)
@@ -51,26 +54,27 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             await _repo.RemoveCartItemsAsync(cart);
             await _repo.SaveChangesAsync();
 
-            return new OrderDTO
-            {
-                OrderId = order.OrderID,
-                UserId = order.UserID,
-                Username = order.UserName,
-                OrderDate = order.OrderDate,
-                Status = order.Status,
-                TotalAmount = order.TotalAmount,
-                Address = order.Address,
-                Items = order.Items.Select(i => new OrderItemDTO
-                {
-                    ProductId = i.ProductID,
-                    ProductName = i.ProductName,
-                    Price = i.Price,
-                    Quantity = i.Quantity,
-                    ImgUrl = i.ImgUrl
-                }).ToList(),
-            };
+            //return new OrderDTO
+            //{
+            //    OrderId = order.OrderID,
+            //    UserId = order.UserID,
+            //    Username = order.UserName,
+            //    OrderDate = order.OrderDate,
+            //    Status = order.Status,
+            //    TotalAmount = order.TotalAmount,
+            //    Address = order.Address,
+            //    Items = order.Items.Select(i => new OrderItemDTO
+            //    {
+            //        ProductId = i.ProductID,
+            //        ProductName = i.ProductName,
+            //        Price = i.Price,
+            //        Quantity = i.Quantity,
+            //        ImgUrl = i.ImgUrl
+            //    }).ToList(),
+            //};
+            return _mapper.Map<OrderDTO>(order);
 
-            
+
         }
 
         public async Task<List<OrderDTO>> GetAllOrderAsync(int userid)
@@ -88,24 +92,25 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             }
 
 
-            return orders.Select(order => new OrderDTO
-            {
-                OrderId = order.OrderID,
-                UserId = order.UserID,
-                Username = order.UserName,
-                OrderDate = order.OrderDate,
-                Status = order.Status,
-                TotalAmount = order.TotalAmount,
-                Address = order.Address,
-                Items = order.Items.Select(i => new OrderItemDTO
-                {
-                    ProductId = i.ProductID,
-                    ProductName = i.ProductName,
-                    Price = i.Price,
-                    Quantity = i.Quantity,
-                    ImgUrl = i.ImgUrl
-                }).ToList()
-            }).ToList();
+            //return orders.Select(order => new OrderDTO
+            //{
+            //    OrderId = order.OrderID,
+            //    UserId = order.UserID,
+            //    Username = order.UserName,
+            //    OrderDate = order.OrderDate,
+            //    Status = order.Status,
+            //    TotalAmount = order.TotalAmount,
+            //    Address = order.Address,
+            //    Items = order.Items.Select(i => new OrderItemDTO
+            //    {
+            //        ProductId = i.ProductID,
+            //        ProductName = i.ProductName,
+            //        Price = i.Price,
+            //        Quantity = i.Quantity,
+            //        ImgUrl = i.ImgUrl
+            //    }).ToList()
+            //}).ToList();
+            return _mapper.Map<List<OrderDTO>>(orders);
 
         }
         public async Task<bool> CancelOrderAsync(int orderId, int userId)
@@ -116,7 +121,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             {
                 return false;
             }
-
+             
             orders.Status = "Cancelled";
            await _repo.SaveChangesAsync();
             return true;
