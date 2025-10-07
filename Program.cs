@@ -1,8 +1,10 @@
 
+using Asp.Versioning;
 using CloudinaryDotNet;
 using DecoranestBacknd.Configurations;
 using DecoranestBacknd.DecoraNest.Core.Interfaces;
 using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
+using DecoranestBacknd.DecoraNest.Core.Repositories;
 using DecoranestBacknd.DecoraNest.Core.Services;
 using DecoranestBacknd.DecoraNest.Core.Services.Admin;
 using DecoranestBacknd.Ecommerce.Shared.Helpers;
@@ -29,6 +31,8 @@ namespace DecoranestBacknd
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
             builder.Services.AddScoped<IWishlist, WishlistService>();
             builder.Services.AddScoped<ICategory, CategoryService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
@@ -74,6 +78,14 @@ namespace DecoranestBacknd
                 var config = sp.GetRequiredService<IOptions<CloudinarySettings>>().Value;
                 Account account = new Account(config.CloudName, config.ApiKey, config.ApiSecret);
                 return new Cloudinary(account);
+            });
+
+            builder.Services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ReportApiVersions = true;
+                options.ApiVersionReader = new HeaderApiVersionReader("api-version");
             });
 
 

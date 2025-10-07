@@ -12,7 +12,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Interfaces.Admin
         Task<AdminUserDTO?> SearchUserEmailAsync(string email);
         Task<AdminUserDTO?> GetUserByIdAsync(int id);
         Task <string?> BlockUnblockUserAsync(int id);
-        Task<bool> DeleteUserAsync(int id);
+        //Task<bool> DeleteUserAsync(int id);
 
 
 

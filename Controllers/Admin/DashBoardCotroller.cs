@@ -1,11 +1,13 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
+﻿using Asp.Versioning;
+using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DecoranestBacknd.Controllers.Admin
 {
     [ApiController]
-    [Route("api/admin/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/admin/[controller]")]
     [Authorize(Roles ="Admin")]
     public class DashBoardCotroller:ControllerBase
     {

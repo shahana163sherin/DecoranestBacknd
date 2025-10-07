@@ -1,8 +1,10 @@
-﻿using DecoranestBacknd.Configurations;
+﻿using CloudinaryDotNet;
+using DecoranestBacknd.Configurations;
 using DecoranestBacknd.DecoraNest.Core.Entities;
 using DecoranestBacknd.DecoraNest.Core.Interfaces;
 using DecoranestBacknd.Ecommerce.Shared.DTO;
 using DecoranestBacknd.Infrastructure.Data;
+using DecoranestBacknd.Migrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Razorpay.Api;
@@ -21,30 +23,51 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
         }
 
         public async Task<Entities.Payment> CreatePaymentAsync(int orderid, decimal amount)
-        {
+        { 
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderID == orderid);
+
+            if (order == null)
+                throw new Exception("Order not found.");
+
+            // 🚫 2. Prevent payment for cancelled orders
+            if (order.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
+                throw new Exception("Cannot create payment for a cancelled order.");
+
+        // ✅ 3. Create Razorpay order
             var client = new RazorpayClient(_settings.Key, _settings.Secret);
             var options = new Dictionary<string, object>
             {
-                { "amount",(amount * 100).ToString() },
-                {"currency","INR" },
-                {"receipt",orderid.ToString() }
+                { "amount", (amount * 100).ToString() }, // Razorpay expects amount in paise
+                { "currency", "INR" },
+                { "receipt", orderid.ToString() }
             };
 
-            var order = client.Order.Create(options);
-            var payment = new Entities.Payment
+        var razorOrder = client.Order.Create(options);
+
+        // ✅ 4. Create payment record in DB
+        var payment = new Entities.Payment
+        {
+            OrderId = orderid,
+            RazorPayOrderId = razorOrder["id"],
+            Amount = amount,
+            Currency = "INR",
+            Status = "created",
+            PaymentDate = DateTime.Now
+        };
+
+            try
             {
-                OrderId = orderid,
-                RazorPayOrderId = order["id"],
-                Amount = amount,
-                Currency = "INR",
-                Status = "created",
-                PaymentDate = DateTime.Now
-            };
-            _context.Add(payment);
-            await _context.SaveChangesAsync();
-            await _context.Entry(payment).Reference(p => p.Order).LoadAsync();
+                _context.Payment.Add(payment);
+                await _context.SaveChangesAsync();
+                await _context.Entry(payment).Reference(p => p.Order).LoadAsync();
 
-            return payment;
+                return payment;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Payment save failed: {ex.InnerException?.Message ?? ex.Message}");
+            }
+
         }
 
         public async Task<bool> VerifyPayment(PaymentDTO dto)

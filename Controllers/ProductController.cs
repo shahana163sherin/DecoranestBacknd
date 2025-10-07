@@ -1,4 +1,5 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Entities;
+﻿using Asp.Versioning;
+using DecoranestBacknd.DecoraNest.Core.Entities;
 using DecoranestBacknd.DecoraNest.Core.Interfaces;
 using DecoranestBacknd.Ecommerce.Shared.DTO;
 using DecoranestBacknd.Ecommerce.Shared.Responses;
@@ -8,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace DecoranestBacknd.Controllers
 {
     [ApiController]
-    [Route("api/users/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/users/[controller]")]
     public class ProductController:ControllerBase
     {
         private readonly IProductService _productService;

@@ -35,13 +35,13 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
 
         public async Task<IEnumerable<AdminUserDTO>> GetAllUsersByRoleAsync(string role)
         {
-            var users= await _context.Users.ToListAsync();
+            var users= await _context.Users.Where(u=>u.Role==role).ToListAsync();
             return users.Select(MapToAdminUserDTO).ToList();
         }
 
         public async Task<IEnumerable<AdminUserDTO>> GetAllUsersByStatus(bool isBlocked)
         {
-            var result= await _context.Users.ToListAsync();
+            var result= await _context.Users.Where(u=>u.IsBlocked==isBlocked).ToListAsync();
             return result.Select(MapToAdminUserDTO).ToList();
         }
 
@@ -88,17 +88,21 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
                 return (string)"Unblocked";
             }
         }
-        public async Task<bool> DeleteUserAsync(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if(user == null)
-            {
-                return false;
-            }
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-            return true;
-        }
+       // public async Task<bool> DeleteUserAsync(int id)
+       // {
+       //     var user = await _context.Users
+       //.Include(u => u.Orders)
+       //.Include(u => u.Items)
+       //.Include(u => u.WishlistItems)
+       //.FirstOrDefaultAsync(u => u.Id == id);
+       //     if (user == null)
+       //     {
+       //         return false;
+       //     }
+       //     _context.Users.Remove(user);
+       //     await _context.SaveChangesAsync();
+       //     return true;
+       // }
 
     }
 }

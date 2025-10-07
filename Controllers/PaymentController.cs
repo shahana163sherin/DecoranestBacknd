@@ -1,4 +1,5 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Interfaces;
+﻿using Asp.Versioning;
+using DecoranestBacknd.DecoraNest.Core.Interfaces;
 using DecoranestBacknd.DecoraNest.Core.Services;
 using DecoranestBacknd.Ecommerce.Shared.DTO;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace DecoranestBacknd.Controllers
 {
     [ApiController]
-    [Route("api/users/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/users/[controller]")]
     [Authorize(Roles = "User")]
 
     public class PaymentController:ControllerBase
@@ -20,8 +22,8 @@ namespace DecoranestBacknd.Controllers
 
         [HttpPost("Pay")]
 
-        public async Task<IActionResult> CreatePayment(int orderid,decimal amount) {
-            var razorpayOrderId = await pay.CreatePaymentAsync(orderid, amount);
+        public async Task<IActionResult> CreatePayment([FromBody] CreatePayDTO dto) {
+            var razorpayOrderId = await pay.CreatePaymentAsync(dto.OrderId,dto.Amount);
             return Ok(new { razorpayOrderId });
         }
 

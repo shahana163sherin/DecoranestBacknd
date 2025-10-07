@@ -1,4 +1,5 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Interfaces;
+﻿using Asp.Versioning;
+using DecoranestBacknd.DecoraNest.Core.Interfaces;
 using DecoranestBacknd.Ecommerce.Shared.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,8 @@ using System.Security.Claims;
 namespace DecoranestBacknd.Controllers
 {
     [ApiController]
-    [Route("api/users/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/users/[controller]")]
     [Authorize (Roles ="User")] 
     public class CartController : ControllerBase
     {

@@ -1,4 +1,5 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
+﻿using Asp.Versioning;
+using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
 using DecoranestBacknd.Ecommerce.Shared.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,9 @@ namespace DecoranestBacknd.Controllers.Admin
 {
     [ApiController]
     [Authorize(Roles = "Admin")]
-    [Route("api/admin/[controller]")]
+    [ApiVersion("1.0")]
+
+    [Route("api/v{version:apiVersion}/admin/[controller]")]
     public class AdminProductController:ControllerBase
     {
         private readonly IAdminProductService _service;
@@ -34,12 +37,30 @@ namespace DecoranestBacknd.Controllers.Admin
             return Ok(result);
         }
 
+        //[HttpPost("Add")]
+        //public async Task<IActionResult>AddProduct([FromForm]ProductUpdateCreateDTO dto)
+        //{
+        //    var result = await _service.AddProductAsync(dto);
+        //    return CreatedAtAction(nameof(GetProductById), new { id = result.Data?.ProductId }, result);
+        //}
+
         [HttpPost("Add")]
-        public async Task<IActionResult>AddProduct([FromForm]ProductUpdateCreateDTO dto)
+        public async Task<IActionResult> AddProduct([FromForm] ProductUpdateCreateDTO dto)
         {
             var result = await _service.AddProductAsync(dto);
-            return CreatedAtAction(nameof(GetProductById), new { id = result.Data?.ProductId }, result);
+
+            if (result.Data == null)
+            {
+                return BadRequest(result);
+            }
+
+            return CreatedAtAction(
+                nameof(GetProductById),
+                new { id = result.Data.ProductId, version = HttpContext.GetRequestedApiVersion()?.ToString() },
+                result.Data
+            );
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult>EditProduct(int id, [FromForm] ProductUpdateCreateDTO dto)

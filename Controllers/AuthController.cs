@@ -1,4 +1,5 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Interfaces;
+﻿using Asp.Versioning;
+using DecoranestBacknd.DecoraNest.Core.Interfaces;
 using DecoranestBacknd.DecoraNest.Core.Services;
 using DecoranestBacknd.Ecommerce.Shared.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace DecoranestBacknd.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+
+    [Route("api/v{version:apiVersion}/[controller]")]
+
     public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;

@@ -1,11 +1,14 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
+﻿using Asp.Versioning;
+using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
+using DecoranestBacknd.Ecommerce.Shared.DTO.Adminn;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DecoranestBacknd.Controllers.Admin
 {
     [ApiController]
-    [Route("api/admin/order")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/admin/order")]
     [Authorize(Roles ="Admin")]
     public class AdminOrderController:ControllerBase
     {
@@ -34,9 +37,9 @@ namespace DecoranestBacknd.Controllers.Admin
         }
 
         [HttpPut("updateStatus")]
-        public async Task<IActionResult>UpdateOrder(int orderid,string status)
+        public async Task<IActionResult>UpdateOrder(PaymentUpdateDTO dto)
         {
-            var result = await _service.UpdateOrderStatusAsync(orderid,status);
+            var result = await _service.UpdateOrderStatusAsync(dto.Id,dto.Status);
             if(!result.Data)
             {
                 return NotFound(result);

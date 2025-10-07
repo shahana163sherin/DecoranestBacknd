@@ -1,11 +1,14 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
+﻿using Asp.Versioning;
+using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
+using DecoranestBacknd.Ecommerce.Shared.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DecoranestBacknd.Controllers.Admin
 {
     [ApiController]
-    [Route("api/admin/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/admin/[controller]")]
     [Authorize(Roles = "Admin")]
     public class AdminUsersController:ControllerBase
     {
@@ -78,29 +81,29 @@ namespace DecoranestBacknd.Controllers.Admin
             return Ok(user);
         }
 
-        [HttpPut("BlockUnblock/{id}")]
-        public async Task<IActionResult>BlockUnblock(int id)
+        [HttpPut("BlockUnblock")]
+        public async Task<IActionResult>BlockUnblock( [FromBody] BlockUserDTO dto)
         {
-            var user=await _service.BlockUnblockUserAsync(id);
+            var user=await _service.BlockUnblockUserAsync(dto.id);
             if(user == null)
             {
-                return NotFound($"No user found with ID: {id}");
+                return NotFound($"No user found with ID: {dto.id}");
             }
             return Ok(new { message =$"User {user}" });
 
 
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult>DeleteUser(int id)
-        {
-            var user = await _service.DeleteUserAsync(id);
-            if (!user)
-            {
-                return NotFound($"No user found with ID: {id}");
-            }
-            return Ok(new { message = "User deleted successfully" });
-        }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteUser(int id)
+        //{
+        //    var user = await _service.DeleteUserAsync(id);
+        //    if (!user)
+        //    {
+        //        return NotFound($"No user found with ID: {id}");
+        //    }
+        //    return Ok(new { message = "User deleted successfully" });
+        //}
 
     }
 }

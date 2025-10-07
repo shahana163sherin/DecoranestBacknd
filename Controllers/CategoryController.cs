@@ -1,11 +1,13 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Entities;
+﻿using Asp.Versioning;
+using DecoranestBacknd.DecoraNest.Core.Entities;
 using DecoranestBacknd.DecoraNest.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DecoranestBacknd.Controllers
 {
     [ApiController]
-    [Route("api/users/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/users/[controller]")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategory _category;

@@ -1,4 +1,5 @@
-﻿using Azure;
+﻿using Asp.Versioning;
+using Azure;
 using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
 using DecoranestBacknd.Ecommerce.Shared.DTO;
 using DecoranestBacknd.Ecommerce.Shared.DTO.Adminn;
@@ -8,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace DecoranestBacknd.Controllers.Admin
 {
     [ApiController]
-    [Route("api/admin/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/admin/[controller]")]
     [Authorize(Roles = "Admin")]
     public class AdminCategoryController:ControllerBase
     {
@@ -36,12 +38,30 @@ namespace DecoranestBacknd.Controllers.Admin
             return Ok(result);
         }
 
+        //[HttpPost("AddCategory")]
+        //public async Task<IActionResult> AddCategory([FromBody]AdminCreateCategoryDTO dto)
+        //{
+        //    var result = await _service.AddCategoryAsync(dto);
+        //    return CreatedAtAction(nameof(GetCategoryById), new { id = result.Data?.CategoryId }, result);
+        //}
+
         [HttpPost("AddCategory")]
-        public async Task<IActionResult> AddCategory([FromBody]AdminCreateCategoryDTO dto)
+        public async Task<IActionResult> AddCategory([FromBody] AdminCreateCategoryDTO dto)
         {
             var result = await _service.AddCategoryAsync(dto);
-            return CreatedAtAction(nameof(GetCategoryById), new { id = result.Data?.CategoryId }, result);
+
+            if (result.Data == null)
+            {
+                return BadRequest(result);
+            }
+
+            return CreatedAtAction(
+                nameof(GetCategoryById),
+                new { id = result.Data.CategoryId, version = HttpContext.GetRequestedApiVersion()?.ToString() },
+                result.Data
+            );
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody]AdminCategoryDTO dto)

@@ -14,6 +14,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Entities
         public string Password { get; set; }
         public string Role { get; set; }
         public bool IsBlocked { get; set; } = false;
+        //public bool isDeleted { get; set; } = false;
         public DateTime CreateAt { get; set; }= DateTime.Now;
         public ICollection<Order> Orders { get; set; }=new List<Order>();
         public ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();

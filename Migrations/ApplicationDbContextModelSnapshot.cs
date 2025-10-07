@@ -40,7 +40,7 @@ namespace DecoranestBacknd.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.CartItem", b =>
@@ -73,7 +73,7 @@ namespace DecoranestBacknd.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Category", b =>
@@ -90,7 +90,7 @@ namespace DecoranestBacknd.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Category");
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Order", b =>
@@ -127,7 +127,7 @@ namespace DecoranestBacknd.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.OrderItem", b =>
@@ -163,7 +163,7 @@ namespace DecoranestBacknd.Migrations
 
                     b.HasIndex("OrderID");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Payment", b =>
@@ -207,7 +207,7 @@ namespace DecoranestBacknd.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Payment");
+                    b.ToTable("Payment", (string)null);
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Product", b =>
@@ -241,7 +241,7 @@ namespace DecoranestBacknd.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.RefreshToken", b =>
@@ -282,7 +282,7 @@ namespace DecoranestBacknd.Migrations
 
                     b.HasIndex("User_Id");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.User", b =>
@@ -320,7 +320,7 @@ namespace DecoranestBacknd.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Wishlist", b =>
@@ -350,7 +350,7 @@ namespace DecoranestBacknd.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Wishlists");
+                    b.ToTable("Wishlists", (string)null);
                 });
 
             modelBuilder.Entity("DecoranestBacknd.DecoraNest.Core.Entities.Cart", b =>

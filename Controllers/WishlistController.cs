@@ -1,4 +1,6 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Interfaces;
+﻿using Asp.Versioning;
+using DecoranestBacknd.DecoraNest.Core.Interfaces;
+using DecoranestBacknd.Ecommerce.Shared.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
@@ -8,7 +10,8 @@ using System.Security.Claims;
 namespace DecoranestBacknd.Controllers
 {
     [ApiController]
-    [Route("api/users/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/users/[controller]")]
     [Authorize (Roles ="User")] 
 
     public class WishlistController:ControllerBase
@@ -21,7 +24,7 @@ namespace DecoranestBacknd.Controllers
 
         [HttpPost("Add")]
 
-        public async Task<IActionResult> AddToWishlist(int productid)
+        public async Task<IActionResult> AddToWishlist(AddWishDTO dto)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if(userIdClaim == null)
@@ -33,7 +36,7 @@ namespace DecoranestBacknd.Controllers
             int userid = int.Parse(userIdClaim);
             try
             {
-                var wish = await _wishlist.AddToWishList(userid, productid);
+                var wish = await _wishlist.AddToWishList(userid, dto.ProductId);
                 var response = new
                 {
                     Status = "Success",

@@ -8,10 +8,10 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
 {
     public class OrderService:IOrderService
     {
-        private readonly ApplicationDbContext _context;
-        public OrderService(ApplicationDbContext context)
+        private readonly IOrderRepository _repo;
+        public OrderService(IOrderRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         public async Task<OrderDTO> CreteOrderAsync(int userid, string address)
@@ -21,17 +21,14 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                 throw new Exception("Invalid User");
             }
 
-            var cart = await _context.Carts
-                .Include(c => c.CartItems)
-                .ThenInclude(c=>c.Product)
-                .FirstOrDefaultAsync(c => c.UserID == userid);
+            var cart = await _repo.GetCartByUserId(userid);
 
-            if(cart == null || cart.CartItems.Count == 0)
+            if (cart == null || cart.CartItems.Count == 0)
             {
                 throw new Exception("Cart is empty");
             }
 
-            var user = await _context.Users.FindAsync(userid);
+            var user = await _repo.GetUserById(userid);
             var order = new Order
             {
                 UserID = userid,
@@ -50,9 +47,9 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                     ImgUrl = ci.Product.ImgUrl
                 }).ToList()
             };
-            _context.Orders.Add(order);
-            _context.CartItems.RemoveRange(cart.CartItems);
-            await _context.SaveChangesAsync();
+           await _repo.AddOrderAsync(order);
+            await _repo.RemoveCartItemsAsync(cart);
+            await _repo.SaveChangesAsync();
 
             return new OrderDTO
             {
@@ -83,15 +80,13 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                 throw new Exception("Invalid user");
             }
 
-            var orders = await _context.Orders
-           .Include(o => o.Items)
-          .Where(o => o.UserID == userid)
-          .ToListAsync();
+            var orders = await _repo.GetOrderByUserIdAsync(userid);
 
-            if (orders == null || orders.Count == 0)
+            if(orders == null || !orders.Any())
             {
-                throw new Exception("There is no order");
+                throw new Exception("There are no orders for this user.");
             }
+
 
             return orders.Select(order => new OrderDTO
             {
@@ -115,15 +110,15 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
         }
         public async Task<bool> CancelOrderAsync(int orderId, int userId)
         {
-            var orders = await _context.Orders.FirstOrDefaultAsync(o => o.OrderID == orderId && o.UserID == userId);
+            var orders = await _repo.GetOrderByIdAsync(orderId, userId);
 
-            if(orders == null)
+            if (orders == null)
             {
                 return false;
             }
 
             orders.Status = "Cancelled";
-            await _context.SaveChangesAsync();
+           await _repo.SaveChangesAsync();
             return true;
         }
 

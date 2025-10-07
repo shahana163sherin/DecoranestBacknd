@@ -1,11 +1,14 @@
-﻿using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
+﻿using Asp.Versioning;
+using DecoranestBacknd.DecoraNest.Core.Interfaces.Admin;
+using DecoranestBacknd.Ecommerce.Shared.DTO.Adminn;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DecoranestBacknd.Controllers.Admin
 {
     [ApiController]
-    [Route("api/admin/payment")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/admin/payment")]
     [Authorize(Roles = "Admin")]
     public class AdminPaymentController:ControllerBase
     {
@@ -62,9 +65,9 @@ namespace DecoranestBacknd.Controllers.Admin
             return Ok(sort);
         }
         [HttpPut("update")]
-        public async Task<IActionResult>UpdateStatus(int id,string status)
+        public async Task<IActionResult>UpdateStatus(PaymentUpdateDTO dto)
         {
-            var upd = await _pay.UpdatePaymentStatusAsync(id, status);
+            var upd = await _pay.UpdatePaymentStatusAsync(dto.Id,dto.Status);
 
             if(!upd.Data)
             {
