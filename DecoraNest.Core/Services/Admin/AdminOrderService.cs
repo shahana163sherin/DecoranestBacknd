@@ -33,6 +33,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
                 .Skip((pagenumber - 1) * limit)
                 .Take(limit)
                 .ToListAsync();
+
             var totalpages = (int)Math.Ceiling((double)totalOrders / limit);
             var orderDTOs = _mapper.Map<List<AdminOrderDTO>>(orders);
             return new PagedResult<AdminOrderDTO>

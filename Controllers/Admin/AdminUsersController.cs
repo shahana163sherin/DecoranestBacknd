@@ -10,7 +10,7 @@ namespace DecoranestBacknd.Controllers.Admin
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/admin/[controller]")]
     [Authorize(Roles = "Admin")]
-    public class AdminUsersController:ControllerBase
+    public class AdminUsersController : ControllerBase
     {
         private readonly IAdminUserService _service;
         public AdminUsersController(IAdminUserService service)
@@ -30,7 +30,7 @@ namespace DecoranestBacknd.Controllers.Admin
         public async Task<IActionResult> GetByRole(string role)
         {
             var user = await _service.GetAllUsersByRoleAsync(role);
-            if(user == null || !user.Any())
+            if (user == null || !user.Any())
             {
                 return NotFound($"No users found with role: {role}");
             }
@@ -38,10 +38,10 @@ namespace DecoranestBacknd.Controllers.Admin
         }
 
         [HttpGet("GetByStatus/{isBlocked}")]
-        public async Task<IActionResult>GetByStatus(bool isBlocked)
+        public async Task<IActionResult> GetByStatus(bool isBlocked)
         {
             var users = await _service.GetAllUsersByStatus(isBlocked);
-            if(users == null || !users.Any())
+            if (users == null || !users.Any())
             {
                 return NotFound($"No users found with status: {(isBlocked ? "Blocked" : "Active")}");
             }
@@ -52,7 +52,7 @@ namespace DecoranestBacknd.Controllers.Admin
         public async Task<IActionResult> SortByDate([FromQuery] bool ascending = true)
         {
             var users = await _service.SortUserByDateAsync(ascending);
-            if(users == null || !users.Any())
+            if (users == null || !users.Any())
             {
                 return NotFound("No users found.");
             }
@@ -63,7 +63,7 @@ namespace DecoranestBacknd.Controllers.Admin
         public async Task<IActionResult> SearchByEmail([FromQuery] string email)
         {
             var user = await _service.SearchUserEmailAsync(email);
-            if(user == null)
+            if (user == null)
             {
                 return NotFound($"No user found with email: {email}");
             }
@@ -71,28 +71,30 @@ namespace DecoranestBacknd.Controllers.Admin
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult>GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             var user = await _service.GetUserByIdAsync(id);
             if (user == null)
             {
-                               return NotFound($"No user found with ID: {id}");
+                return NotFound($"No user found with ID: {id}");
             }
             return Ok(user);
         }
 
         [HttpPut("BlockUnblock")]
-        public async Task<IActionResult>BlockUnblock( [FromBody] BlockUserDTO dto)
+        public async Task<IActionResult> BlockUnblock([FromBody] BlockUserDTO dto)
         {
-            var user=await _service.BlockUnblockUserAsync(dto.id);
-            if(user == null)
+            var user = await _service.BlockUnblockUserAsync(dto.id);
+            if (user == null)
             {
                 return NotFound($"No user found with ID: {dto.id}");
             }
-            return Ok(new { message =$"User {user}" });
-
-
+            return Ok(new { message = $"User {user}" });
         }
+
+
+
+
 
         //[HttpDelete("{id}")]
         //public async Task<IActionResult> DeleteUser(int id)
@@ -107,3 +109,4 @@ namespace DecoranestBacknd.Controllers.Admin
 
     }
 }
+

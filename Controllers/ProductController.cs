@@ -11,7 +11,7 @@ namespace DecoranestBacknd.Controllers
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/users/[controller]")]
-    public class ProductController:ControllerBase
+    public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
         public ProductController(IProductService productService)
@@ -19,11 +19,11 @@ namespace DecoranestBacknd.Controllers
             _productService = productService;
         }
         [HttpGet]
-    
+
 
         public async Task<IActionResult> GetAllProductAsync()
         {
-           var products= await _productService.GetAllProductAsync();
+            var products = await _productService.GetAllProductAsync();
             var response = new ApiResponse<IEnumerable<UserProductDTO>>
             {
                 Status = "Success",
@@ -33,7 +33,7 @@ namespace DecoranestBacknd.Controllers
             return Ok(response);
         }
 
-        [HttpGet(":id")]
+        [HttpGet("{id}")]
         public async Task<Object> GetProductByIdAsync(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);

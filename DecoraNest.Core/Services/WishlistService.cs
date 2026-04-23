@@ -18,7 +18,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
         {
 
             var user = await _context.Users.FindAsync(userid);
-            if(user == null)
+            if (user == null)
             {
                 throw new Exception("Invalid user");
             }
@@ -28,15 +28,15 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                 throw new Exception("Invalid Product");
             }
 
-            var existing = await _context.Wishlists.FirstOrDefaultAsync(w =>w.UserID==userid && w.ProductId == productid);
+            var existing = await _context.Wishlists.FirstOrDefaultAsync(w => w.UserID == userid && w.ProductId == productid);
             if (existing != null)
             {
                 throw new Exception("Product already in wishlist");
             }
-            var wishlist=new Wishlist
+            var wishlist = new Wishlist
             {
                 UserID = userid,
-                ProductId=productid,
+                ProductId = productid,
                 Price = product.Price,
                 AddedAt = DateTime.UtcNow
             };
@@ -82,18 +82,68 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             }).ToList();
         }
 
-        public async Task<bool> RemoveFromWishAsync(int userid,int wishlistid)
+        public async Task<bool> RemoveFromWishAsync(int userid, int wishlistid)
         {
-          var wishItem=await _context.Wishlists.FirstOrDefaultAsync(w=>w.UserID == userid && w.WishListID==wishlistid);
+            var wishItem = await _context.Wishlists.FirstOrDefaultAsync(w => w.UserID == userid && w.WishListID == wishlistid);
             if (wishItem == null)
             {
                 return false;
             }
-             _context.Wishlists.Remove(wishItem);
-             await _context.SaveChangesAsync();
+            _context.Wishlists.Remove(wishItem);
+            await _context.SaveChangesAsync();
             return true;
 
         }
+
+
+
+        public async Task<WishListDTO> ToggleWishListAsync(int userid, int productid)
+        {
+
+            var user = await _context.Users.FindAsync(userid);
+            if (user == null)
+                throw new Exception("Invalid user");
+
+            var product = await _context.Products.FindAsync(productid);
+            if (product == null)
+                throw new Exception("Invalid Product");
+
+            // Check if wishlist entry already exists
+            var existing = await _context.Wishlists
+                .FirstOrDefaultAsync(w => w.UserID == userid && w.ProductId == productid);
+
+            if (existing != null)
+            {
+                // If exists, remove it (toggle off)
+                _context.Wishlists.Remove(existing);
+                await _context.SaveChangesAsync();
+                return null; // or return something to indicate removal
+            }
+            else
+            {
+                // If not exists, add it (toggle on)
+                var wishlist = new Wishlist
+                {
+                    UserID = userid,
+                    ProductId = productid,
+                    Price = product.Price,
+                    AddedAt = DateTime.UtcNow
+                };
+                _context.Wishlists.Add(wishlist);
+                await _context.SaveChangesAsync();
+
+                return new WishListDTO
+                {
+                    WishlistId = wishlist.WishListID,
+                    ProductId = product.ProductID,
+                    ProductName = product.ProductName,
+                    ImgUrl = product.ImgUrl,
+                    Price = product.Price,
+                    AddedAt = wishlist.AddedAt
+                };
+            }
+        }
+
 
     }
 }

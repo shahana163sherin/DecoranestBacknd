@@ -129,6 +129,16 @@ namespace DecoranestBacknd
                     }
                 });
             });
+           
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReactApp",
+                    policy => policy
+                    .WithOrigins("http://localhost:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                     .AllowCredentials());
+            });
 
             var app = builder.Build();
 
@@ -156,8 +166,8 @@ namespace DecoranestBacknd
                 app.UseSwaggerUI();
             }
 
-
             app.UseHttpsRedirection();
+            app.UseCors("AllowReactApp");
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -76,7 +76,11 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             {
                 if (_context.Users.Any(u => u.Email == dto.Email))
                 {
-                    throw new Exception("User with this email already exists");
+                    return new
+                    {
+                        status = "error",
+                        message = "User with this email already exists"
+                    };
                 }
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
                 var user = new User
@@ -106,7 +110,11 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             }
             catch(Exception ex)
             {
-                throw new Exception("Error registering user: " + ex.Message);
+                return new
+                {
+                    status = "error",
+                    message = ex.Message ?? "Registration failed"
+                };
             }
         }
 
@@ -153,6 +161,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                     {
                         name = user.Name,
                         email = user.Email,
+                        role=user.Role
 
                     }
                 };
@@ -161,11 +170,12 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             }
             catch (Exception ex)
             {
-                return "Error logging in: " + ex.Message;
+                return new { status = "error", message = "Error logging in: " + ex.Message };
             }
+
         }
 
-       
+
 
         public async Task<bool>ResetPasswordAsync(UserResetPasswordDTO dto)
         {

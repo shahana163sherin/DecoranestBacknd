@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using DecoranestBacknd.DecoraNest.Core.Interfaces;
+using DecoranestBacknd.DecoraNest.Core.Services;
 using DecoranestBacknd.Ecommerce.Shared.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,10 +28,10 @@ namespace DecoranestBacknd.Controllers
         public async Task<IActionResult> AddToWishlist(AddWishDTO dto)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if(userIdClaim == null)
+            if (userIdClaim == null)
             {
                 return Unauthorized(new { Status = "Error", Message = "Invalid Token" });
-                
+
             }
 
             int userid = int.Parse(userIdClaim);
@@ -46,8 +47,9 @@ namespace DecoranestBacknd.Controllers
 
                 return Ok(response);
             }
-            catch (Exception ex) { 
-              return BadRequest(ex.Message);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
         [HttpGet("AllWishlist")]
@@ -86,20 +88,49 @@ namespace DecoranestBacknd.Controllers
                 throw new Exception("Invalid Token");
             }
 
-           
+
             var userid = int.Parse(userIdClaim);
-            var removed = await _wishlist.RemoveFromWishAsync(userid,wishlistid);
-            if (!removed) {
+            var removed = await _wishlist.RemoveFromWishAsync(userid, wishlistid);
+            if (!removed)
+            {
                 return NotFound("Items Not Found");
-                    }
+            }
 
             return Ok(new
             {
+
                 Status = "Success",
                 Message = "Removed From Wishlist"
             });
 
-           
+
         }
+
+        [HttpPost("toggle-wishlist")]
+        public async Task<IActionResult> ToggleWishList([FromBody] TooglewishDTO dto)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                    return Unauthorized(new { status = "error", message = "Invalid token" });
+
+                var result = await _wishlist.ToggleWishListAsync(userId, dto.productId);
+
+                if (result == null || result.WishlistId == 0)
+                {
+                    return Ok(new { status = "success", message = "Product removed from wishlist.", wishlist = new List<object>() });
+                }
+
+                return Ok(new { status = "success", message = "Wishlist updated.", wishlist = result });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { status = "error", message = ex.Message });
+            }
+        }
+
+
     }
 }
+

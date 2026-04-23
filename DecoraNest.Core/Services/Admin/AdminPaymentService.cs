@@ -131,7 +131,9 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
             var sort = ascending
                 ? await payment.OrderBy(o => o.PaymentDate).ToListAsync() 
                 : await payment.OrderByDescending(o => o.PaymentDate).ToListAsync();
+
             var result = sort.Select(MapToDTO).ToList();
+
          return new ApiResponse<IEnumerable<AdminPaymentDTO>>
             {
                 Status = "Success",

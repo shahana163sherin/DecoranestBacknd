@@ -38,12 +38,6 @@ namespace DecoranestBacknd.Controllers.Admin
             return Ok(result);
         }
 
-        //[HttpPost("AddCategory")]
-        //public async Task<IActionResult> AddCategory([FromBody]AdminCreateCategoryDTO dto)
-        //{
-        //    var result = await _service.AddCategoryAsync(dto);
-        //    return CreatedAtAction(nameof(GetCategoryById), new { id = result.Data?.CategoryId }, result);
-        //}
 
         [HttpPost("AddCategory")]
         public async Task<IActionResult> AddCategory([FromBody] AdminCreateCategoryDTO dto)

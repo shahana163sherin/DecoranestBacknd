@@ -21,7 +21,9 @@ namespace DecoranestBacknd.DecoraNest.Core.Entities
         public ICollection<Cart> Carts { get; set; } = new List<Cart>();
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
-
-
+        internal static string? FindFirst(string nameIdentifier)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

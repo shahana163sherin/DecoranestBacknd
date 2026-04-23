@@ -7,6 +7,6 @@
         public int CategoryId { get; set; }
         public decimal Price { get; set; }
         public IFormFile? ImageFile { get; set; }
-        //public int Amount { get; set; }
+        
     }
 }

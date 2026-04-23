@@ -78,34 +78,40 @@ namespace DecoranestBacknd.Controllers
             }
         }
         [HttpPost("Cancel")]
-        public async Task<IActionResult> CancelOrder([FromBody]CancelOrderDTO dto)
+        public async Task<IActionResult> CancelOrder([FromBody] CancelOrderDTO dto)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim))
-            {
                 return Unauthorized("Invalid Token");
-            }
 
             int userid = int.Parse(userIdClaim);
 
-            var result = await _ord.CancelOrderAsync(dto.OrderId, userid);
-
-            if (!result)
+            try
             {
-                return NotFound(new
+                var result = await _ord.CancelOrderAsync(dto.OrderId, userid);
+
+                if (!result)
+                    return NotFound(new
+                    {
+                        Status = "Error",
+                        Message = "Order Not Found"
+                    });
+
+                return Ok(new
                 {
-                    Status = "Error",
-                    Message = "Order Not Found"
+                    Status = "Success",
+                    Message = "Order Cancelled Successfully"
                 });
             }
-
-            return Ok(new
+            catch (Exception ex)
             {
-                Status = "Success",
-                Message = "Order Cancelled Successfully"
-            });
+                return BadRequest(new
+                {
+                    Status = "Error",
+                    Message = ex.Message
+                });
+            }
         }
-
 
     }
 }

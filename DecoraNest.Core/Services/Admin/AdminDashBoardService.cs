@@ -37,7 +37,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
                 Revenue = x.Revenue
             }).ToList();
             var topProducts = await _context.OrderItems
-                //.Include(oi => oi.Product)
+                
                 .GroupBy(oi => oi.ProductName)
                 .Select(g => new TopSellingDTO
                 {

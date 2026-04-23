@@ -41,8 +41,9 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
 
         public async Task<IEnumerable<AdminUserDTO>> GetAllUsersByStatus(bool isBlocked)
         {
-            var result= await _context.Users.Where(u=>u.IsBlocked==isBlocked).ToListAsync();
+            var result = await _context.Users.Where(u => u.IsBlocked == isBlocked).ToListAsync();
             return result.Select(MapToAdminUserDTO).ToList();
+
         }
 
         public async Task<IEnumerable<AdminUserDTO>> SortUserByDateAsync(bool ascending = true)
@@ -88,21 +89,44 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
                 return (string)"Unblocked";
             }
         }
-       // public async Task<bool> DeleteUserAsync(int id)
-       // {
-       //     var user = await _context.Users
-       //.Include(u => u.Orders)
-       //.Include(u => u.Items)
-       //.Include(u => u.WishlistItems)
-       //.FirstOrDefaultAsync(u => u.Id == id);
-       //     if (user == null)
-       //     {
-       //         return false;
-       //     }
-       //     _context.Users.Remove(user);
-       //     await _context.SaveChangesAsync();
-       //     return true;
-       // }
 
+        //public async Task<IEnumerable<User>> GetFilteredUsersAsync(string? role, bool? isBlocked, string? email, bool ascending)
+        //{
+        //    var query = _context.Users.AsQueryable();
+
+        //    if (!string.IsNullOrEmpty(role))
+        //        query = query.Where(u => u.Role == role);
+
+        //    if (isBlocked.HasValue)
+        //        query = query.Where(u => u.IsBlocked == isBlocked.Value);
+
+        //    if (!string.IsNullOrEmpty(email))
+        //        query = query.Where(u => u.Email.Contains(email));
+
+        //    query = ascending
+        //        ? query.OrderBy(u => u.CreateAt)
+        //        : query.OrderByDescending(u => u.CreateAt);
+
+        //    return await query.ToListAsync();
+        //}
+
+      
     }
+    // public async Task<bool> DeleteUserAsync(int id)
+    // {
+    //     var user = await _context.Users
+    //.Include(u => u.Orders)
+    //.Include(u => u.Items)
+    //.Include(u => u.WishlistItems)
+    //.FirstOrDefaultAsync(u => u.Id == id);
+    //     if (user == null)
+    //     {
+    //         return false;
+    //     }
+    //     _context.Users.Remove(user);
+    //     await _context.SaveChangesAsync();
+    //     return true;
+    // }
+
 }
+

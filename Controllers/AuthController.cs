@@ -42,6 +42,33 @@ namespace DecoranestBacknd.Controllers
         }
 
 
+        //[HttpPost("Login")]
+        //public async Task<IActionResult> Login(UserLoginDTO dto)
+        //{
+        //    try
+        //    {
+        //        if (!ModelState.IsValid)
+        //        {
+        //            return BadRequest(new { status = "error", message = "Invalid request" });
+        //        }
+
+        //        var result = await _userService.LoginUserAsync(dto);
+
+
+        //        if (result == null || result.GetType().GetProperty("jwt_token")?.GetValue(result) == null)
+        //        {
+        //            return Unauthorized(new { status = "error", message = "Invalid email or password" });
+        //        }
+
+        //        return Ok(result); 
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { status = "error", message = ex.Message });
+        //    }
+        //}
+
+
         [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLoginDTO dto)
         {
@@ -54,12 +81,33 @@ namespace DecoranestBacknd.Controllers
 
                 var result = await _userService.LoginUserAsync(dto);
 
+                
+                var status = result?.GetType().GetProperty("status")?.GetValue(result)?.ToString();
+                var message = result?.GetType().GetProperty("message")?.GetValue(result)?.ToString();
+
+               
+                if ( message == "User is blocked" ||
+                    message ==  "Invalid password" ||
+                    message == "User Not Found")
+                {
+                    return StatusCode(StatusCodes.Status403Forbidden, new { status = "error", message });
+                }
+         
+
+                
+                if (status == "error" && message != null)
+                {
+                    return Unauthorized(new { status = "error", message });
+                }
+
+                
                 if (result == null || result.GetType().GetProperty("jwt_token")?.GetValue(result) == null)
                 {
                     return Unauthorized(new { status = "error", message = "Invalid email or password" });
                 }
 
-                return Ok(result); 
+                
+                return Ok(result);
             }
             catch (Exception ex)
             {

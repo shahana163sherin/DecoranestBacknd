@@ -7,6 +7,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Interfaces
         Task<WishListDTO> AddToWishList(int userid, int productid);
         Task<List<WishListDTO>> GetWishList(int userid);
         Task<bool> RemoveFromWishAsync(int userid, int wishlistid);
+        Task<WishListDTO> ToggleWishListAsync(int userid, int productid);
 
     }
 }

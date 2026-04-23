@@ -22,13 +22,15 @@ namespace DecoranestBacknd.DecoraNest.Core.Services.Admin
         };
         public async Task<IEnumerable<AdminCategoryDTO>> GetAllCategoriesAsync()
         {
-            return await _context.Category
-                .Select(c => new AdminCategoryDTO
-                {
-                    CategoryId = c.CategoryId,
-                    CategoryName = c.CategoryName
-                })
-                .ToListAsync();
+            //return await _context.Category
+            //    .Select(c => new AdminCategoryDTO
+            //    {
+            //        CategoryId = c.CategoryId,
+            //        CategoryName = c.CategoryName
+            //    })
+            //    .ToListAsync();
+            var category = await _context.Category.ToListAsync();
+            return category.Select(c => MapToDTO(c)).ToList();
         }
 
         public async Task<ApiResponse<AdminCategoryDTO?>> GetCategoryByIdAsync(int id)

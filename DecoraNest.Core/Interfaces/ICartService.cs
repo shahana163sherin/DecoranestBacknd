@@ -9,6 +9,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Interfaces
         Task<CartDto> GetAllCartItemsAsync(int userId);
         Task<CartDto> RemoveItemAsync(int userId, int CartItemId);
         Task<CartDto> ClearItemsAsync(int userId);
+        Task<CartDto> UpdateCartItemQuantityAsync(int userId, int cartItemId, int change);
 
 
     }

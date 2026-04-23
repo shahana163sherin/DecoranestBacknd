@@ -12,10 +12,12 @@ namespace DecoranestBacknd.AutoMapper
 
 
             CreateMap<Order, OrderDTO>()
-                .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderID))
-                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserID))
-                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
-                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
+     .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderID))
+     .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserID))
+     .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
+     .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items))
+     .ForMember(dest => dest.Status, opt => opt.MapFrom(src =>
+         src.Payment != null ? src.Payment.Status : src.Status));
 
             CreateMap<OrderItem, OrderItemDTO>()
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductID))
@@ -25,7 +27,7 @@ namespace DecoranestBacknd.AutoMapper
                 .ForMember(dest => dest.ImgUrl, opt => opt.MapFrom(src => src.ImgUrl));
 
 
-
+            
 
             CreateMap<Product, AdminProductDTO>()
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductID))

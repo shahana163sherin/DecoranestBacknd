@@ -19,7 +19,7 @@ namespace DecoranestBacknd.Controllers.Admin
         }
 
         [HttpGet("getall")]
-        public async Task <IActionResult> GetAllPayment(int pagenumber=1,int limit=10)
+        public async Task <IActionResult> GetAllPayment(int pagenumber,int limit)
         {
             var result = await _pay.GetAllPaymentAsync(pagenumber, limit);
             return Ok(result);

@@ -54,24 +54,6 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             await _repo.RemoveCartItemsAsync(cart);
             await _repo.SaveChangesAsync();
 
-            //return new OrderDTO
-            //{
-            //    OrderId = order.OrderID,
-            //    UserId = order.UserID,
-            //    Username = order.UserName,
-            //    OrderDate = order.OrderDate,
-            //    Status = order.Status,
-            //    TotalAmount = order.TotalAmount,
-            //    Address = order.Address,
-            //    Items = order.Items.Select(i => new OrderItemDTO
-            //    {
-            //        ProductId = i.ProductID,
-            //        ProductName = i.ProductName,
-            //        Price = i.Price,
-            //        Quantity = i.Quantity,
-            //        ImgUrl = i.ImgUrl
-            //    }).ToList(),
-            //};
             return _mapper.Map<OrderDTO>(order);
 
 
@@ -92,38 +74,24 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             }
 
 
-            //return orders.Select(order => new OrderDTO
-            //{
-            //    OrderId = order.OrderID,
-            //    UserId = order.UserID,
-            //    Username = order.UserName,
-            //    OrderDate = order.OrderDate,
-            //    Status = order.Status,
-            //    TotalAmount = order.TotalAmount,
-            //    Address = order.Address,
-            //    Items = order.Items.Select(i => new OrderItemDTO
-            //    {
-            //        ProductId = i.ProductID,
-            //        ProductName = i.ProductName,
-            //        Price = i.Price,
-            //        Quantity = i.Quantity,
-            //        ImgUrl = i.ImgUrl
-            //    }).ToList()
-            //}).ToList();
+            
             return _mapper.Map<List<OrderDTO>>(orders);
 
         }
+      
         public async Task<bool> CancelOrderAsync(int orderId, int userId)
         {
-            var orders = await _repo.GetOrderByIdAsync(orderId, userId);
+            var order = await _repo.GetOrderByIdAsync(orderId, userId);
 
-            if (orders == null)
-            {
+            if (order == null)
                 return false;
-            }
-             
-            orders.Status = "Cancelled";
-           await _repo.SaveChangesAsync();
+
+
+            if (order.Payment != null && order.Payment.Status.ToLower() == "paid")
+                throw new Exception("Cannot cancel an order that has been paid.");
+
+            order.Status = "Cancelled";
+            await _repo.SaveChangesAsync();
             return true;
         }
 

@@ -2,6 +2,8 @@
 using DecoranestBacknd.DecoraNest.Core.Interfaces;
 using DecoranestBacknd.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Razorpay.Api;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DecoranestBacknd.DecoraNest.Core.Repositories
 {
@@ -26,20 +28,26 @@ namespace DecoranestBacknd.DecoraNest.Core.Repositories
             return await _context.Users.FindAsync(userid);
             
         }
-        public async Task AddOrderAsync(Order order)
+        public async Task AddOrderAsync(Entities.Order order)
         {
             _context.Orders.Add(order);
         }
-        public async Task<List<Order>> GetOrderByUserIdAsync(int userid)
+        public async Task<List<Entities.Order>> GetOrderByUserIdAsync(int userid)
         {
             return await _context.Orders
                 .Include(o=>o.Items)
                 .Where(o=>o.UserID == userid)
                 .ToListAsync();
         }
-        public async Task<Order?>GetOrderByIdAsync(int orderid,int userid)
+        public async Task<Entities.Order?> GetOrderByIdAsync(int orderId, int userId, bool includePayment = false)
         {
-            return await _context.Orders.FirstOrDefaultAsync(o => o.OrderID == orderid);
+            IQueryable<Entities.Order> query = _context.Orders
+                .Where(o => o.OrderID == orderId && o.UserID == userId);
+
+            if (includePayment)
+                query = query.Include(o => o.Payment);
+
+            return await query.FirstOrDefaultAsync();
         }
         public async Task SaveChangesAsync()
         {

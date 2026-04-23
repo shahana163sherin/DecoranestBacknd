@@ -12,7 +12,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Interfaces.Admin
         Task<ApiResponse<IEnumerable<AdminOrderDTO>>> SearchOrders(string username);
         Task<ApiResponse<IEnumerable<AdminOrderDTO>>> GetOrdersByStatus(string status);
         Task<ApiResponse<IEnumerable<AdminOrderDTO>>>SortOrdersByDate(bool ascending);
-        //Task<ApiResponse<IEnumerable<AdminOrderDTO>>>GetOrderByCategory(string categoryName);
+       
 
 
     }

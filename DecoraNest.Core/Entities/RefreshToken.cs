@@ -21,7 +21,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Entities
         public string? RevokedByIp { get; set; }
         public string? ReplacedByToken { get; set; }
 
-        // ✅ Computed fields (NOT mapped to DB)
+        
         [NotMapped]
         public bool IsExpired => DateTime.UtcNow >= Expires;
 
@@ -31,7 +31,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Entities
         [NotMapped]
         public bool IsActive => !IsRevoked && !IsExpired;
 
-        // ✅ Relationship with User
+       
         [ForeignKey("User")]
         public int User_Id { get; set; }
         public User User { get; set; }

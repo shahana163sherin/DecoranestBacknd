@@ -29,22 +29,22 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             if (order == null)
                 throw new Exception("Order not found.");
 
-            // 🚫 2. Prevent payment for cancelled orders
+          
             if (order.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
                 throw new Exception("Cannot create payment for a cancelled order.");
 
-        // ✅ 3. Create Razorpay order
+       
             var client = new RazorpayClient(_settings.Key, _settings.Secret);
             var options = new Dictionary<string, object>
             {
-                { "amount", (amount * 100).ToString() }, // Razorpay expects amount in paise
+                { "amount", (amount * 100).ToString() }, 
                 { "currency", "INR" },
                 { "receipt", orderid.ToString() }
             };
 
         var razorOrder = client.Order.Create(options);
 
-        // ✅ 4. Create payment record in DB
+ 
         var payment = new Entities.Payment
         {
             OrderId = orderid,
@@ -83,7 +83,7 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
 
             try
             {
-                Utils.verifyPaymentSignature(attributes); // verifies signature
+                Utils.verifyPaymentSignature(attributes); 
 
                 var payment = await _context.Payment
                     .FirstOrDefaultAsync(p => p.RazorPayOrderId == dto.RazorpayOrderId);

@@ -6,8 +6,6 @@ namespace DecoranestBacknd.DecoraNest.Core.Interfaces
     {
         Task<IEnumerable<object>> GetAllCategoryAsync();
         Task<object> GetCategoryById(int categoryId);
-        //Task<bool> AddCategoryAsync(Category category);
-        //Task<bool> UpdateCategoryAsync(int categoryId,Category category);
-        //Task<bool>DeleteCategoryAsync(int categoryId);
+       
     }
 }

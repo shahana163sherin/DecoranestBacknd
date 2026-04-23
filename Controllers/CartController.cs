@@ -133,6 +133,26 @@ namespace DecoranestBacknd.Controllers
 
             }
         }
+        [HttpPatch("update-quantity/{cartItemId}")]
+        public async Task<IActionResult> UpdateQuantity(int cartItemId, [FromQuery] int change)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized(new { Status = "Error", Message = "Invalid Token" });
+                }
+                var userId = int.Parse(userIdClaim);
+                var updatedCart = await _cartService.UpdateCartItemQuantityAsync(userId, cartItemId, change);
+                return Ok(updatedCart);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
 }
 

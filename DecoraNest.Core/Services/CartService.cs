@@ -104,7 +104,8 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
                     {
                         Id = ci.Product.ProductID,
                         Name = ci.Product.ProductName,
-                        Price = ci.Product.Price
+                        Price = ci.Product.Price,
+                        ImageUrl=ci.Product.ImgUrl
                     }
                 }).ToList()
             };
@@ -147,6 +148,31 @@ namespace DecoranestBacknd.DecoraNest.Core.Services
             }
 
             _context.CartItems.RemoveRange(cart.CartItems);
+            await _context.SaveChangesAsync();
+
+            return await GetAllCartItemsAsync(userId);
+        }
+        public async Task<CartDto> UpdateCartItemQuantityAsync(int userId, int cartItemId, int change)
+        {
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .ThenInclude(ci => ci.Product)
+                .FirstOrDefaultAsync(c => c.UserID == userId);
+
+            if (cart == null)
+                throw new Exception("Cart not found");
+
+            var cartItem = cart.CartItems.FirstOrDefault(ci => ci.CartItemId == cartItemId);
+            if (cartItem == null)
+                throw new Exception("Cart item not found");
+
+            cartItem.Quantity += change;
+
+            if (cartItem.Quantity <= 0)
+            {
+                _context.CartItems.Remove(cartItem);
+            }
+
             await _context.SaveChangesAsync();
 
             return await GetAllCartItemsAsync(userId);

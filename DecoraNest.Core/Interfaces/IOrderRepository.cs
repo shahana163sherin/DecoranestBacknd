@@ -8,7 +8,8 @@ namespace DecoranestBacknd.DecoraNest.Core.Interfaces
         Task<User?> GetUserById(int userid);
         Task AddOrderAsync(Order order);
         Task<List<Order>> GetOrderByUserIdAsync(int userid);
-        Task<Order?>GetOrderByIdAsync(int orderid,int userid);
+        Task<Order?> GetOrderByIdAsync(int orderId, int userId, bool includePayment = false);
+
         Task SaveChangesAsync();
         Task RemoveCartItemsAsync(Cart cart);
 

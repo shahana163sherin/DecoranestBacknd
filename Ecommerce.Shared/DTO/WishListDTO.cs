@@ -8,5 +8,10 @@
         public string ImgUrl { get; set; }
         public decimal Price { get; set; }
         public DateTime AddedAt { get; set; }
+
+        internal bool Any()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

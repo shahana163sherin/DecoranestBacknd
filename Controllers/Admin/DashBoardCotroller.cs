@@ -9,10 +9,10 @@ namespace DecoranestBacknd.Controllers.Admin
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/admin/[controller]")]
     [Authorize(Roles ="Admin")]
-    public class DashBoardCotroller:ControllerBase
+    public class DashBoardController:ControllerBase
     {
         private readonly IAdminDashBoardService _service;
-        public DashBoardCotroller(IAdminDashBoardService service)
+        public DashBoardController(IAdminDashBoardService service)
         {
             _service = service;
         }
