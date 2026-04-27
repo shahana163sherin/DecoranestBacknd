@@ -8,6 +8,20 @@ namespace DecoranestBacknd.Ecommerce.Shared.Helpers
     {
         public static void SeedProducts(ApplicationDbContext context)
         {
+            if (!context.Users.Any(u=>u.Email.Trim().ToLower() =="admin@deco.com"))
+            {
+                context.Users.Add(
+                    new User
+                    {
+                        
+                        Name = "Admin1",
+                        Email = "admin@deco.com",
+                        Password = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
+                        Role = "Admin",
+                        IsBlocked = false
+                    });
+                context.SaveChanges();
+            }
             // Seed categories first
             if (!context.Category.Any())
             {

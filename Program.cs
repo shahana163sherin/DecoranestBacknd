@@ -51,7 +51,15 @@ namespace DecoranestBacknd
             });
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+                 sqlOptions =>
+                 {
+                     sqlOptions.EnableRetryOnFailure(
+                         maxRetryCount: 5,
+                         maxRetryDelay: TimeSpan.FromSeconds(10),
+                         errorNumbersToAdd: null
+                     );
+                 }));
 
            
             builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
@@ -144,12 +152,6 @@ namespace DecoranestBacknd
 
             app.UseCustomeMiddleware();
 
-
-            using (var scope = app.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                SeedHelper.SeedProducts(context);
-            }
 
             using (var scope = app.Services.CreateScope())
             {
